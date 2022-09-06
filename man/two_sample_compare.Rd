@@ -12,7 +12,7 @@ two_sample_compare(
   sample_2_var,
   sample_2_cov,
   min_vaf = 0.5,
-  min_exon_coverage = 125,
+  min_fraction_125x = 0.9,
   match_by_colnames = c("CHROM", "POS", "REF", "ALT", "GENE", "EXON"),
   suffix_names = c(".sample_1", ".sample_2")
 )
@@ -32,7 +32,7 @@ two_sample_compare(
 
 \item{min_vaf}{Variant tables are filtered based on minimum variant allele frequency (VAF). Variants with VAF less than or equal to this value are not used in comparison.  \link{default: 0.05}.}
 
-\item{min_exon_coverage}{Variant tables are filtered based on minimum exon coverage level. Variants with coverage less than or equal to this value are not used in comparison. \link{default: 125}.}
+\item{min_fraction_125x}{Exon tables are filtered based on the minimum fraction of bases covered at 125x. \link{default: 0.9}.}
 
 \item{match_by_colnames}{Vector of column names to use for matching. Passed to \verb{by = } parameter in join functions. \link{default: c("CHROM", "POS", "REF", "ALT", "GENE", "EXON")}.}
 

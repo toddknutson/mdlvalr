@@ -11,7 +11,7 @@ all_sample_compare(
   var_path,
   cov_path,
   min_vaf = 0.05,
-  min_exon_coverage = 125
+  min_fraction_125x = 0.9
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ all_sample_compare(
 
 \item{min_vaf}{Variant tables are filtered based on minimum variant allele frequency (VAF). Variants with VAF less than or equal to this value are not used in comparison.  \link{default: 0.05}.}
 
-\item{min_exon_coverage}{Variant tables are filtered based on minimum exon coverage level. Variants with coverage less than or equal to this value are not used in comparison. \link{default: 125}.}
+\item{min_fraction_125x}{Exon tables are filtered based on the minimum fraction of bases covered at 125x. \link{default: 0.9}.}
 }
 \value{
 Returns a named list of lists. The length is equal to the number of comparisons made.

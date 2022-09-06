@@ -36,7 +36,7 @@ read_files <- function(var_file, cov_file) {
 #' @param sample_2_var Tibble of sample_2 variants.
 #' @param sample_2_cov Tibble of sample_2 exon coverage.
 #' @param min_vaf Variant tables are filtered based on minimum variant allele frequency (VAF). Variants with VAF less than or equal to this value are not used in comparison.  [default: 0.05].
-#' @param min_exon_coverage Variant tables are filtered based on minimum exon coverage level. Variants with coverage less than or equal to this value are not used in comparison. [default: 125].
+#' @param min_fraction_125x Exon tables are filtered based on the minimum fraction of bases covered at 125x. [default: 0.9].
 #' @param match_by_colnames Vector of column names to use for matching. Passed to `by = ` parameter in join functions. [default: c("CHROM", "POS", "REF", "ALT", "GENE", "EXON")]. 
 #' @param suffix_names Suffix names added to column names after running join functions. Vector of length two, [default: c(".sample_1", ".sample_2")].
 #'
@@ -44,32 +44,44 @@ read_files <- function(var_file, cov_file) {
 #'
 #'
 two_sample_compare <- function(sample_1_name, sample_1_var, sample_1_cov, sample_2_name, sample_2_var, sample_2_cov,
-    min_vaf = 0.5, min_exon_coverage = 125,
+    min_vaf = 0.5, min_fraction_125x = 0.9,
     match_by_colnames = c("CHROM", "POS", "REF", "ALT", "GENE", "EXON"),
     suffix_names = c(".sample_1", ".sample_2")) {
     
     
     # Filter tibbles
-    sample_1_filtered <- sample_1_var %>%
-        dplyr::filter(VAF >= min_vaf & DEPTH_exon_min_depth >= min_exon_coverage)
+    sample_1_pass <- sample_1_var %>%
+        dplyr::filter(VAF >= min_vaf)
 
-    sample_2_filtered <- sample_2_var %>%
-        dplyr::filter(VAF >= min_vaf & DEPTH_exon_min_depth >= min_exon_coverage)
+    sample_1_notpass <- sample_1_var %>%
+        dplyr::filter(VAF < min_vaf)
+        
+    sample_2_pass <- sample_2_var %>%
+        dplyr::filter(VAF >= min_vaf)
+
+    sample_2_notpass <- sample_2_var %>%
+        dplyr::filter(VAF < min_vaf)
     
     # Compare tables
-    vars_in_common <- dplyr::inner_join(sample_1_filtered, sample_2_filtered, by = match_by_colnames, suffix = suffix_names)
-    vars_in_common_from_sample_1 <- dplyr::semi_join(sample_1_filtered, sample_2_filtered, by = match_by_colnames)
-    vars_in_common_from_sample_2 <- dplyr::semi_join(sample_2_filtered, sample_1_filtered, by = match_by_colnames)
-    vars_in_sample_1_missing_from_sample_2 <- dplyr::anti_join(sample_1_filtered, sample_2_filtered, by = match_by_colnames)
-    vars_in_sample_2_missing_from_sample_1 <- dplyr::anti_join(sample_2_filtered, sample_1_filtered, by = match_by_colnames)
+    vars_in_common <- dplyr::inner_join(sample_1_pass, sample_2_pass, by = match_by_colnames, suffix = suffix_names)
+    vars_in_common_from_sample_1 <- dplyr::semi_join(sample_1_pass, sample_2_pass, by = match_by_colnames)
+    vars_in_common_from_sample_2 <- dplyr::semi_join(sample_2_pass, sample_1_pass, by = match_by_colnames)
+    vars_in_sample_1_missing_from_sample_2 <- dplyr::anti_join(sample_1_pass, sample_2_pass, by = match_by_colnames)
+    vars_in_sample_2_missing_from_sample_1 <- dplyr::anti_join(sample_2_pass, sample_1_pass, by = match_by_colnames)
+    
+    # What variants in "sample_1_pass", did not overlap with "sample_2_pass" (i.e. vars_in_sample_1_missing_from_sample_2), but
+    # did overlap with sample_2_nopass? How many?
+    vars_in_common_1pass_2notpass <- dplyr::inner_join(vars_in_sample_1_missing_from_sample_2, sample_2_notpass, by = match_by_colnames, suffix = suffix_names)
+    vars_in_common_2pass_1notpass <- dplyr::inner_join(vars_in_sample_2_missing_from_sample_1, sample_1_notpass, by = match_by_colnames, suffix = suffix_names)
+
     
     
     # Get coverage info
     sample_1_cov_fail <- sample_1_cov %>%
-        dplyr::filter(min_depth < min_exon_coverage)
+        dplyr::filter(fraction_125x < min_fraction_125x)
 
     sample_2_cov_fail <- sample_2_cov %>%
-        dplyr::filter(min_depth < min_exon_coverage)
+        dplyr::filter(fraction_125x < min_fraction_125x)
 
     out <- list(
         # Names
@@ -78,20 +90,25 @@ two_sample_compare <- function(sample_1_name, sample_1_var, sample_1_cov, sample
         # Var tables
         sample_1_var = sample_1_var, 
         sample_2_var = sample_2_var,
-        sample_1_filtered = sample_1_filtered, 
-        sample_2_filtered = sample_2_filtered,
+        sample_1_pass = sample_1_pass, 
+        sample_2_pass = sample_2_pass,
         vars_in_common = vars_in_common,
         vars_in_common_from_sample_1 = vars_in_common_from_sample_1,
         vars_in_common_from_sample_2 = vars_in_common_from_sample_2,
         vars_in_sample_1_missing_from_sample_2 = vars_in_sample_1_missing_from_sample_2,
         vars_in_sample_2_missing_from_sample_1 = vars_in_sample_2_missing_from_sample_1,
+        vars_in_common_1pass_2notpass = vars_in_common_1pass_2notpass,
+        vars_in_common_2pass_1notpass = vars_in_common_2pass_1notpass,
         # Variant stats
         n_vars_sample_1 = nrow(sample_1_var),
         n_vars_sample_2 = nrow(sample_2_var),
-        n_vars_sample_1_filtered = nrow(sample_1_filtered),
-        n_vars_sample_2_filtered = nrow(sample_2_filtered),
+        n_vars_sample_1_pass = nrow(sample_1_pass),
+        n_vars_sample_2_pass = nrow(sample_2_pass),
+        n_vars_in_common = nrow(vars_in_common),
         n_vars_in_sample_1_missing_from_sample_2 = nrow(vars_in_sample_1_missing_from_sample_2),
         n_vars_in_sample_2_missing_from_sample_1 = nrow(vars_in_sample_2_missing_from_sample_1),
+        n_vars_in_common_1pass_2notpass = nrow(vars_in_common_1pass_2notpass),
+        n_vars_in_common_2pass_1notpass = nrow(vars_in_common_2pass_1notpass),
         # Var tables
         sample_1_cov = sample_1_cov,
         sample_2_cov = sample_2_cov,
@@ -120,7 +137,7 @@ two_sample_compare <- function(sample_1_name, sample_1_var, sample_1_cov, sample
 #' @param var_path String of column name in `samples_tbl` that represents the variant file path.
 #' @param cov_path String of column name in `samples_tbl` that represents the coverage file path.
 #' @param min_vaf Variant tables are filtered based on minimum variant allele frequency (VAF). Variants with VAF less than or equal to this value are not used in comparison.  [default: 0.05].
-#' @param min_exon_coverage Variant tables are filtered based on minimum exon coverage level. Variants with coverage less than or equal to this value are not used in comparison. [default: 125].
+#' @param min_fraction_125x Exon tables are filtered based on the minimum fraction of bases covered at 125x. [default: 0.9].
 #'
 #'
 #'
@@ -129,7 +146,7 @@ two_sample_compare <- function(sample_1_name, sample_1_var, sample_1_cov, sample
 #'
 #'
 #' @export
-all_sample_compare <- function(samples_tbl, sample_group, comparison_group, var_path, cov_path, min_vaf = 0.05, min_exon_coverage = 125) {
+all_sample_compare <- function(samples_tbl, sample_group, comparison_group, var_path, cov_path, min_vaf = 0.05, min_fraction_125x = 0.9) {
     tbl <- samples_tbl %>%
         dplyr::select(all_of(c(sample_group, comparison_group, var_path, cov_path))) %>%
         magrittr::set_colnames(c("sample_group", "comparison_group", "var_path", "cov_path")) %>%
@@ -168,7 +185,7 @@ all_sample_compare <- function(samples_tbl, sample_group, comparison_group, var_
             sample_1_cov = sample_1_files$cov_tbl,
             sample_2_cov = sample_2_files$cov_tbl, 
             min_vaf = min_vaf, 
-            min_exon_coverage = min_exon_coverage)
+            min_fraction_125x = min_fraction_125x)
         names(two_sample_compare_list)[i] <- as.character(glue("{tbl_wide$comparison_name_1[i]}_vs_{tbl_wide$comparison_name_2[i]}"))
     }
     return(two_sample_compare_list)
@@ -231,7 +248,7 @@ out_files <- function(two_sample_compare_list, filename_prefix = "") {
         wb <- write.xlsx(all_tbls, file = glue("{filename_prefix}{curr_comparison}.xlsx"), overwrite = TRUE) 
     }
     tbl_summary_all <- bind_rows(comparison_summary_tbl)
-    wb <- write.xlsx(list(all_samles = tbl_summary_all), file = glue("{filename_prefix}all.xlsx"), overwrite = TRUE) 
+    wb <- write.xlsx(list(all_samples = tbl_summary_all), file = glue("{filename_prefix}all.xlsx"), overwrite = TRUE) 
 }
 
 
