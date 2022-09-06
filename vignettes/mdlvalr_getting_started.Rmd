@@ -14,8 +14,124 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(mdlvalr)
 
+Load required packages.
+
+```{r}
+library(mdlvalr)
+library(tidyverse)
+library(glue)
+library(openxlsx)
+```
+
+
+Get input data. Use the provided example data that comes with the `mdlvalr` R package. 
+
+```{r}
+# Find example data included with mdlvalr package
+extdata_dir <- system.file("extdata", package = "mdlvalr", mustWork = TRUE)
+tar_files <- list.files(extdata_dir, pattern = "*.tar.gz", full.names = TRUE, recursive = TRUE)
+
+
+# Untar and uncompress files (if not already available)
+for (i in seq_along(tar_files)) {
+    curr_tar_path <- tar_files[i]
+    # Find the top level dir name inside the tar.gz
+	curr_top_level_dirname <- basename(untar(tarfile = curr_tar_path, list = TRUE)[1])
+	
+	if (!dir.exists(curr_top_level_dirname)) {
+		untar(tarfile = curr_tar_path)
+	} else {
+	    message(glue("'{curr_top_level_dirname}' dir already exists - will not untar again."))
+	}
+}
 
 ```
+
+
+
+```{r}
+sample_info <- tibble(tar_path = tar_files) %>%
+    dplyr::mutate(tar_filename = basename(tar_path)) %>%
+    dplyr::mutate(out_name = str_remove(tar_filename, ".tar.gz")) %>%
+    dplyr::mutate(out_name = str_remove(out_name, "^output_")) %>%
+    dplyr::mutate(sample_name = str_split(out_name, "_", simplify = TRUE)[, 2]) %>%
+    dplyr::mutate(sample_name_short = str_remove(sample_name, "-[^-]*$")) %>%
+    dplyr::mutate(sample_name_short = factor(sample_name_short)) %>%
+    dplyr::mutate(group = str_extract(sample_name, "[^-]*$")) %>%
+    dplyr::mutate(group = glue("{group}ng")) %>%
+    dplyr::mutate(group = factor(group, levels = c("100ng", "150ng"))) %>%
+    dplyr::mutate(run_name = str_split(out_name, "_", simplify = TRUE)[, 1]) %>%
+    dplyr::mutate(run_ver = str_remove(out_name, fixed(as.character(glue("{run_name}_{sample_name}_"))))) %>%
+    dplyr::mutate(filtered_path = glue("{out_name}/{sample_name}_{run_ver}_filtered_integrated_variant_output_summary.xlsx")) %>%
+    dplyr::mutate(coverage_path = glue("{out_name}/{sample_name}_{run_ver}_coverage_summary.xlsx"))
+    
+    
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+out_dir <- normalizePath(".")
+proj_name <- "concordance_hybcap"
+
+
+
+if (!dir.exists(glue("{out_dir}/{proj_name}"))) {dir.create(glue("{out_dir}/{proj_name}"), recursive = TRUE)}
+setwd(glue("{out_dir}/{proj_name}"))
+
+wb <- openxlsx::write.xlsx(list(sample_info = sample_info), file = glue("sample_info.xlsx"), overwrite = TRUE) 
+
+```
+
+
+
+
+Run concordance
+
+```{r}
+
+
+
+out_data_list <- mdlvalr::all_sample_compare(samples_tbl = sample_info, sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", min_vaf = 0.05, min_fraction_125x = 0.9)
+
+```
+
+
+
+
+Create out files
+
+
+```{r}
+setwd(glue("{out_dir}/{proj_name}"))
+mdlvalr::out_files(out_data_list, filename_prefix = "vaf_0.05_")
+
+```
+
+
+
+
+Zip up results
+
+
+```{r}
+setwd(out_dir)
+system(glue("tar czvf {proj_name}.tar.gz {proj_name}"), intern = TRUE)
+
+```
+
+
