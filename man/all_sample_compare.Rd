@@ -11,7 +11,8 @@ all_sample_compare(
   var_path,
   cov_path,
   min_vaf = 0.05,
-  min_fraction_125x = 0.9
+  min_fraction_125x = 0.9,
+  cds_table
 )
 }
 \arguments{

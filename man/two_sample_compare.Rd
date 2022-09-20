@@ -14,7 +14,8 @@ two_sample_compare(
   min_vaf = 0.5,
   min_fraction_125x = 0.9,
   match_by_colnames = c("CHROM", "POS", "REF", "ALT", "GENE", "EXON"),
-  suffix_names = c(".sample_1", ".sample_2")
+  suffix_names = c(".sample_1", ".sample_2"),
+  cds_table
 )
 }
 \arguments{
