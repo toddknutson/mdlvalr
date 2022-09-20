@@ -106,7 +106,7 @@ Run concordance
 
 
 
-out_data_list <- mdlvalr::all_sample_compare(samples_tbl = sample_info, sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", min_vaf = 0.05, min_fraction_125x = 0.9)
+out_data_list <- mdlvalr::all_sample_compare(samples_tbl = sample_info, sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", min_vaf = 0.05, min_fraction_125x = 0.9, cds_table = cds_table)
 
 ```
 
