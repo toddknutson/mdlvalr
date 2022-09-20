@@ -22,6 +22,40 @@ read_files <- function(var_file, cov_file) {
 }
 
 
+#' Add a column indicating whether variant overlaps with a CDS region
+#'
+#' @param var_tbl Tibble of variants. Must have columns named: chr, start, end, type.
+#' @param cds_table Tibble RefSeq gff that includes CDS regions. Must have column name: "type" that indicates the CDS or not.
+#'
+#' @return Returns the same var_tbl that was input, but includes additional column for CDS.
+#'
+add_cds_column <- function(var_tbl, cds_table) {
+    cds_table_granges <- cds_table %>%
+        dplyr::select(chr, start, end, type) %>%
+        dplyr::mutate(start = as.numeric(start)) %>%
+        dplyr::mutate(end = as.numeric(end)) %>%
+        dplyr::rename(seqnames = "chr") %>%
+        dplyr::relocate(seqnames) %>%
+        dplyr::mutate(seqnames = glue("chr{seqnames}")) %>%
+        plyranges::as_granges()
+
+    var_tbl_granges <- var_tbl %>%
+        dplyr::mutate(start = as.numeric(POS)) %>%
+        dplyr::mutate(end = as.numeric(POS)) %>%
+        dplyr::mutate(seqnames = CHROM) %>%
+        dplyr::relocate(seqnames) %>%
+        plyranges::as_granges()
+
+    var_tbl_granges_cds <- plyranges::join_overlap_left(var_tbl_granges, cds_table_granges) %>%
+        as_tibble() %>%
+        distinct() %>%
+        dplyr::select(-seqnames, -start, -end, -width, -strand) %>%
+        dplyr::rename(within_refseq_cds = "type") %>%
+        dplyr::mutate(within_refseq_cds = if_else(is.na(within_refseq_cds), "no", "yes"))
+    return(var_tbl_granges_cds)
+}
+
+
 
 
 
@@ -46,9 +80,13 @@ read_files <- function(var_file, cov_file) {
 two_sample_compare <- function(sample_1_name, sample_1_var, sample_1_cov, sample_2_name, sample_2_var, sample_2_cov,
     min_vaf = 0.5, min_fraction_125x = 0.9,
     match_by_colnames = c("CHROM", "POS", "REF", "ALT", "GENE", "EXON"),
-    suffix_names = c(".sample_1", ".sample_2")) {
-    
-    
+    suffix_names = c(".sample_1", ".sample_2"),
+    cds_table) {
+
+    # Add CDS flags
+    sample_1_var <- add_cds_column(sample_1_var, cds_table)
+    sample_2_var <- add_cds_column(sample_2_var, cds_table)
+
     # Filter tibbles
     sample_1_pass <- sample_1_var %>%
         dplyr::filter(VAF >= min_vaf)
@@ -83,6 +121,30 @@ two_sample_compare <- function(sample_1_name, sample_1_var, sample_1_cov, sample
     sample_2_cov_fail <- sample_2_cov %>%
         dplyr::filter(fraction_125x < min_fraction_125x)
 
+
+
+    # Calculate stats
+    n_vars_sample_1 <- nrow(sample_1_var)
+    n_vars_sample_2 <- nrow(sample_2_var)
+    n_vars_sample_1_pass <- nrow(sample_1_pass)
+    n_vars_sample_2_pass <- nrow(sample_2_pass)
+    n_vars_in_common <- nrow(vars_in_common)
+    n_vars_in_sample_1_missing_from_sample_2 <- nrow(vars_in_sample_1_missing_from_sample_2)
+    n_vars_in_sample_2_missing_from_sample_1 <- nrow(vars_in_sample_2_missing_from_sample_1)
+    n_vars_in_common_1pass_2notpass <- nrow(vars_in_common_1pass_2notpass)
+    n_vars_in_common_2pass_1notpass <- nrow(vars_in_common_2pass_1notpass)
+    n_exons_in_sample_1 <- nrow(sample_1_cov)
+    n_exons_in_sample_1_fail_coverage <- nrow(sample_1_cov_fail)
+    n_exons_in_sample_2 <- nrow(sample_2_cov)
+    n_exons_in_sample_2_fail_coverage <- nrow(sample_2_cov_fail)
+    frac_concordance_raw <- format(round(n_vars_in_common / (sum(n_vars_in_common, n_vars_in_sample_1_missing_from_sample_2, n_vars_in_sample_2_missing_from_sample_1)), 3), nsmall = 2)
+    frac_concordance_corrected <- format(round(n_vars_in_common / (sum(n_vars_in_common, n_vars_in_sample_1_missing_from_sample_2, n_vars_in_sample_2_missing_from_sample_1) -
+        sum(n_vars_in_common_1pass_2notpass, n_vars_in_common_2pass_1notpass)), 3), nsmall = 2)
+    frac_discrep_threshold <- format(round(sum(n_vars_in_common_1pass_2notpass, n_vars_in_common_2pass_1notpass) / sum(n_vars_in_sample_1_missing_from_sample_2, n_vars_in_sample_2_missing_from_sample_1), 3), nsmall = 2)
+	frac_exons_fail_sample_1 <- format(round(n_exons_in_sample_1_fail_coverage / n_exons_in_sample_1, 3), nsmall = 2)
+	frac_exons_fail_sample_2 <- format(round(n_exons_in_sample_2_fail_coverage / n_exons_in_sample_2, 3), nsmall = 2)
+
+format(round(1, 2), nsmall = 2)
     out <- list(
         # Names
         sample_1_name = sample_1_name,
@@ -100,25 +162,31 @@ two_sample_compare <- function(sample_1_name, sample_1_var, sample_1_cov, sample
         vars_in_common_1pass_2notpass = vars_in_common_1pass_2notpass,
         vars_in_common_2pass_1notpass = vars_in_common_2pass_1notpass,
         # Variant stats
-        n_vars_sample_1 = nrow(sample_1_var),
-        n_vars_sample_2 = nrow(sample_2_var),
-        n_vars_sample_1_pass = nrow(sample_1_pass),
-        n_vars_sample_2_pass = nrow(sample_2_pass),
-        n_vars_in_common = nrow(vars_in_common),
-        n_vars_in_sample_1_missing_from_sample_2 = nrow(vars_in_sample_1_missing_from_sample_2),
-        n_vars_in_sample_2_missing_from_sample_1 = nrow(vars_in_sample_2_missing_from_sample_1),
-        n_vars_in_common_1pass_2notpass = nrow(vars_in_common_1pass_2notpass),
-        n_vars_in_common_2pass_1notpass = nrow(vars_in_common_2pass_1notpass),
+        n_vars_sample_1 = n_vars_sample_1,
+        n_vars_sample_2 = n_vars_sample_2,
+        n_vars_sample_1_pass = n_vars_sample_1_pass,
+        n_vars_sample_2_pass = n_vars_sample_2_pass,
+        n_vars_in_common = n_vars_in_common,
+        n_vars_in_sample_1_missing_from_sample_2 = n_vars_in_sample_1_missing_from_sample_2,
+        n_vars_in_sample_2_missing_from_sample_1 = n_vars_in_sample_2_missing_from_sample_1,
+        n_vars_in_common_1pass_2notpass = n_vars_in_common_1pass_2notpass,
+        n_vars_in_common_2pass_1notpass = n_vars_in_common_2pass_1notpass,
         # Var tables
         sample_1_cov = sample_1_cov,
         sample_2_cov = sample_2_cov,
         sample_1_cov_fail = sample_1_cov_fail,
         sample_2_cov_fail = sample_2_cov_fail,
         # Coverage stats
-        n_exons_in_sample_1 = nrow(sample_1_cov),
-        n_exons_in_sample_1_fail_coverage = nrow(sample_1_cov_fail),
-        n_exons_in_sample_2 = nrow(sample_2_cov),
-        n_exons_in_sample_2_fail_coverage = nrow(sample_2_cov_fail)
+        n_exons_in_sample_1 = n_exons_in_sample_1,
+        n_exons_in_sample_1_fail_coverage = n_exons_in_sample_1_fail_coverage,
+        n_exons_in_sample_2 = n_exons_in_sample_2,
+        n_exons_in_sample_2_fail_coverage = n_exons_in_sample_2_fail_coverage,
+        # Concordance summary stats
+        frac_concordance_raw = frac_concordance_raw,
+        frac_concordance_corrected = frac_concordance_corrected,
+        frac_discrep_threshold = frac_discrep_threshold,
+        frac_exons_fail_sample_1 = frac_exons_fail_sample_1,
+        frac_exons_fail_sample_2 = frac_exons_fail_sample_2
     )
     return(out)
 }
@@ -146,7 +214,7 @@ two_sample_compare <- function(sample_1_name, sample_1_var, sample_1_cov, sample
 #'
 #'
 #' @export
-all_sample_compare <- function(samples_tbl, sample_group, comparison_group, var_path, cov_path, min_vaf = 0.05, min_fraction_125x = 0.9) {
+all_sample_compare <- function(samples_tbl, sample_group, comparison_group, var_path, cov_path, min_vaf = 0.05, min_fraction_125x = 0.9, cds_table) {
     tbl <- samples_tbl %>%
         dplyr::select(all_of(c(sample_group, comparison_group, var_path, cov_path))) %>%
         magrittr::set_colnames(c("sample_group", "comparison_group", "var_path", "cov_path")) %>%
@@ -185,7 +253,8 @@ all_sample_compare <- function(samples_tbl, sample_group, comparison_group, var_
             sample_1_cov = sample_1_files$cov_tbl,
             sample_2_cov = sample_2_files$cov_tbl, 
             min_vaf = min_vaf, 
-            min_fraction_125x = min_fraction_125x)
+            min_fraction_125x = min_fraction_125x,
+            cds_table = cds_table)
         names(two_sample_compare_list)[i] <- as.character(glue("{tbl_wide$comparison_name_1[i]}_vs_{tbl_wide$comparison_name_2[i]}"))
     }
     return(two_sample_compare_list)
