@@ -348,31 +348,28 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openxlsx)</span></code></pre></div>
 <p>Get input data. Use the provided example data that comes with the <code>mdlvalr</code> R package.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find example data included with mdlvalr package</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>extdata_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mdlvalr&quot;</span>, <span class="at">mustWork =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>tar_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(extdata_dir, <span class="at">pattern =</span> <span class="st">&quot;*.tar.gz&quot;</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working dir</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>out_dir <span class="ot">&lt;-</span> <span class="fu">normalizePath</span>(<span class="st">&quot;.&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>proj_name <span class="ot">&lt;-</span> <span class="st">&quot;concordance_hybcap&quot;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Untar and uncompress files (if not already available)</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(tar_files)) {</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    curr_tar_path <span class="ot">&lt;-</span> tar_files[i]</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the top level dir name inside the tar.gz</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    curr_top_level_dirname <span class="ot">&lt;-</span> <span class="fu">basename</span>(<span class="fu">untar</span>(<span class="at">tarfile =</span> curr_tar_path, <span class="at">list =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>])</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(curr_top_level_dirname)) {</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">untar</span>(<span class="at">tarfile =</span> curr_tar_path)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">message</span>(<span class="fu">glue</span>(<span class="st">&quot;&#39;{curr_top_level_dirname}&#39; dir already exists - will not untar again.&quot;</span>))</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;221313_01-01011-100_2022_0121_1317&#39; dir already exists - will not untar again.</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;221313_01-01011-150_2022_0121_1319&#39; dir already exists - will not untar again.</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;221313_01-01012-100_2022_0121_1326&#39; dir already exists - will not untar again.</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;221313_01-01012-150_2022_0121_1324&#39; dir already exists - will not untar again.</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;221313_01-01013-100_2022_0121_1305&#39; dir already exists - will not untar again.</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;221313_01-01013-150_2022_0121_1309&#39; dir already exists - will not untar again.</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;221313_01-01014-100_2022_0121_1314&#39; dir already exists - will not untar again.</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;221313_01-01014-150_2022_0121_1316&#39; dir already exists - will not untar again.</span></span></code></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Find example data included with mdlvalr package</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>extdata_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mdlvalr&quot;</span>, <span class="at">mustWork =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>tar_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(extdata_dir, <span class="at">pattern =</span> <span class="st">&quot;*.tar.gz&quot;</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Untar and uncompress files (if not already available)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(tar_files)) {</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    curr_tar_path <span class="ot">&lt;-</span> tar_files[i]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the top level dir name inside the tar.gz</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    curr_top_level_dirname <span class="ot">&lt;-</span> <span class="fu">basename</span>(<span class="fu">untar</span>(<span class="at">tarfile =</span> curr_tar_path, <span class="at">list =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>])</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(curr_top_level_dirname)) {</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">untar</span>(<span class="at">tarfile =</span> curr_tar_path)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">message</span>(<span class="fu">glue</span>(<span class="st">&quot;&#39;{curr_top_level_dirname}&#39; dir already exists - will not untar again.&quot;</span>))</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sample_info <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">tar_path =</span> tar_files) <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">tar_filename =</span> <span class="fu">basename</span>(tar_path)) <span class="sc">%&gt;%</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">out_name =</span> <span class="fu">str_remove</span>(tar_filename, <span class="st">&quot;.tar.gz&quot;</span>)) <span class="sc">%&gt;%</span></span>
@@ -389,33 +386,34 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">coverage_path =</span> <span class="fu">glue</span>(<span class="st">&quot;{out_name}/{sample_name}_{run_ver}_coverage_summary.xlsx&quot;</span>))</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    </span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>out_dir <span class="ot">&lt;-</span> <span class="fu">normalizePath</span>(<span class="st">&quot;.&quot;</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>proj_name <span class="ot">&lt;-</span> <span class="st">&quot;concordance_hybcap&quot;</span></span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="fu">glue</span>(<span class="st">&quot;{out_dir}/{proj_name}&quot;</span>))) {<span class="fu">dir.create</span>(<span class="fu">glue</span>(<span class="st">&quot;{out_dir}/{proj_name}&quot;</span>), <span class="at">recursive =</span> <span class="cn">TRUE</span>)}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">glue</span>(<span class="st">&quot;{out_dir}/{proj_name}&quot;</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="fu">glue</span>(<span class="st">&quot;{out_dir}/{proj_name}&quot;</span>))) {<span class="fu">dir.create</span>(<span class="fu">glue</span>(<span class="st">&quot;{out_dir}/{proj_name}&quot;</span>), <span class="at">recursive =</span> <span class="cn">TRUE</span>)}</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">glue</span>(<span class="st">&quot;{out_dir}/{proj_name}&quot;</span>))</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>wb <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">write.xlsx</span>(<span class="fu">list</span>(<span class="at">sample_info =</span> sample_info), <span class="at">file =</span> <span class="fu">glue</span>(<span class="st">&quot;sample_info.xlsx&quot;</span>), <span class="at">overwrite =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>wb <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">write.xlsx</span>(<span class="fu">list</span>(<span class="at">sample_info =</span> sample_info), <span class="at">file =</span> <span class="fu">glue</span>(<span class="st">&quot;sample_info.xlsx&quot;</span>), <span class="at">overwrite =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<p>Load RefSeq GFF dataset (supplied with R package)</p>
+<pre><code># Assign lazy data object to variable
+invisible(refseq_gff_unnest_with_chrom_cds)
+refseq_gff_unnest_with_chrom_cds &lt;- refseq_gff_unnest_with_chrom_cds </code></pre>
 <p>Run concordance</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>out_data_list <span class="ot">&lt;-</span> mdlvalr<span class="sc">::</span><span class="fu">all_sample_compare</span>(<span class="at">samples_tbl =</span> sample_info, <span class="at">sample_group =</span> <span class="st">&quot;sample_name_short&quot;</span>, <span class="at">comparison_group =</span> <span class="st">&quot;group&quot;</span>, <span class="at">var_path =</span> <span class="st">&quot;filtered_path&quot;</span>, <span class="at">cov_path =</span> <span class="st">&quot;coverage_path&quot;</span>, <span class="at">min_vaf =</span> <span class="fl">0.05</span>, <span class="at">min_fraction_125x =</span> <span class="fl">0.9</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>out_data_list <span class="ot">&lt;-</span> mdlvalr<span class="sc">::</span><span class="fu">all_sample_compare</span>(<span class="at">samples_tbl =</span> sample_info, <span class="at">sample_group =</span> <span class="st">&quot;sample_name_short&quot;</span>, <span class="at">comparison_group =</span> <span class="st">&quot;group&quot;</span>, <span class="at">var_path =</span> <span class="st">&quot;filtered_path&quot;</span>, <span class="at">cov_path =</span> <span class="st">&quot;coverage_path&quot;</span>, <span class="at">min_vaf =</span> <span class="fl">0.05</span>, <span class="at">min_fraction_125x =</span> <span class="fl">0.9</span>, <span class="at">cds_table =</span> refseq_gff_unnest_with_chrom_cds)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: replacing previous import &#39;utils::download.file&#39; by</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;restfulr::download.file&#39; when loading &#39;rtracklayer&#39;</span></span></code></pre></div>
 <p>Create out files</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">glue</span>(<span class="st">&quot;{out_dir}/{proj_name}&quot;</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>mdlvalr<span class="sc">::</span><span class="fu">out_files</span>(out_data_list, <span class="at">filename_prefix =</span> <span class="st">&quot;vaf_0.05_&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">glue</span>(<span class="st">&quot;{out_dir}/{proj_name}&quot;</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mdlvalr<span class="sc">::</span><span class="fu">out_files</span>(out_data_list, <span class="at">filename_prefix =</span> <span class="st">&quot;vaf_0.05_&quot;</span>)</span></code></pre></div>
 <p>Zip up results</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(out_dir)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="fu">glue</span>(<span class="st">&quot;tar czvf {proj_name}.tar.gz {proj_name}&quot;</span>), <span class="at">intern =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;concordance_hybcap/&quot;                                              </span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] &quot;concordance_hybcap/sample_info.xlsx&quot;                              </span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;concordance_hybcap/vaf_0.05_01-01011_100ng_vs_01-01011_150ng.xlsx&quot;</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;concordance_hybcap/vaf_0.05_01-01012_100ng_vs_01-01012_150ng.xlsx&quot;</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;concordance_hybcap/vaf_0.05_01-01013_100ng_vs_01-01013_150ng.xlsx&quot;</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6] &quot;concordance_hybcap/vaf_0.05_01-01014_100ng_vs_01-01014_150ng.xlsx&quot;</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [7] &quot;concordance_hybcap/vaf_0.05_all.xlsx&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(out_dir)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="fu">glue</span>(<span class="st">&quot;tar czvf {proj_name}.tar.gz {proj_name}&quot;</span>), <span class="at">intern =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;concordance_hybcap/&quot;                                              </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] &quot;concordance_hybcap/sample_info.xlsx&quot;                              </span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;concordance_hybcap/vaf_0.05_01-01011_100ng_vs_01-01011_150ng.xlsx&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;concordance_hybcap/vaf_0.05_01-01012_100ng_vs_01-01012_150ng.xlsx&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;concordance_hybcap/vaf_0.05_01-01013_100ng_vs_01-01013_150ng.xlsx&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6] &quot;concordance_hybcap/vaf_0.05_01-01014_100ng_vs_01-01014_150ng.xlsx&quot;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [7] &quot;concordance_hybcap/vaf_0.05_all.xlsx&quot;</span></span></code></pre></div>
 
 
 

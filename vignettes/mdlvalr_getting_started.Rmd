@@ -28,6 +28,11 @@ library(openxlsx)
 Get input data. Use the provided example data that comes with the `mdlvalr` R package. 
 
 ```{r}
+# Set working dir
+out_dir <- normalizePath(".")
+proj_name <- "concordance_hybcap"
+
+
 # Find example data included with mdlvalr package
 extdata_dir <- system.file("extdata", package = "mdlvalr", mustWork = TRUE)
 tar_files <- list.files(extdata_dir, pattern = "*.tar.gz", full.names = TRUE, recursive = TRUE)
@@ -40,7 +45,7 @@ for (i in seq_along(tar_files)) {
 	curr_top_level_dirname <- basename(untar(tarfile = curr_tar_path, list = TRUE)[1])
 	
 	if (!dir.exists(curr_top_level_dirname)) {
-		untar(tarfile = curr_tar_path)
+        untar(tarfile = curr_tar_path)
 	} else {
 	    message(glue("'{curr_top_level_dirname}' dir already exists - will not untar again."))
 	}
@@ -85,11 +90,6 @@ sample_info <- tibble(tar_path = tar_files) %>%
 
 
 ```{r}
-out_dir <- normalizePath(".")
-proj_name <- "concordance_hybcap"
-
-
-
 if (!dir.exists(glue("{out_dir}/{proj_name}"))) {dir.create(glue("{out_dir}/{proj_name}"), recursive = TRUE)}
 setwd(glue("{out_dir}/{proj_name}"))
 
@@ -97,7 +97,13 @@ wb <- openxlsx::write.xlsx(list(sample_info = sample_info), file = glue("sample_
 
 ```
 
+Load RefSeq GFF dataset (supplied with R package)
 
+```
+# Assign lazy data object to variable
+invisible(refseq_gff_unnest_with_chrom_cds)
+refseq_gff_unnest_with_chrom_cds <- refseq_gff_unnest_with_chrom_cds 
+```
 
 
 Run concordance
@@ -106,7 +112,7 @@ Run concordance
 
 
 
-out_data_list <- mdlvalr::all_sample_compare(samples_tbl = sample_info, sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", min_vaf = 0.05, min_fraction_125x = 0.9, cds_table = cds_table)
+out_data_list <- mdlvalr::all_sample_compare(samples_tbl = sample_info, sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", min_vaf = 0.05, min_fraction_125x = 0.9, cds_table = refseq_gff_unnest_with_chrom_cds)
 
 ```
 
