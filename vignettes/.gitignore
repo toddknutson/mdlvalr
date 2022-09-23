@@ -1,1 +1,3 @@
 *.R
+# Ignore all subdirectories
+*/*
