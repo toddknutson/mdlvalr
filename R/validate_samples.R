@@ -1,5 +1,4 @@
-#' Validate a table of sample info
-#' @param samples_tbl Tibble of sample info. Requires five columns (listed below).
+#' Validate a table of sample info @param samples_tbl Tibble of sample info. Requires five columns (listed below).
 #' @param sample_name Column name that specifies the sample names. [string].
 #' @param sample_group Column name that specifies the sample_group. [string].
 #' @param comparison_group Column name that specifies the comparison_group. [string].
@@ -36,7 +35,10 @@ validate_samples <- function(samples_tbl, sample_name, sample_group, comparison_
 
     tbl_wide <- tbl2 %>%
         tidyr::pivot_wider(id_cols = sample_group, names_from = "comparison_group_int", values_from = c("var_path", "cov_path", "comparison_name")) %>%
-        dplyr::mutate(pipeline = pipeline)
+        dplyr::mutate(pipeline = pipeline) %>%
+        dplyr::mutate(comparison_name = glue("{comparison_name_1}_vs_{comparison_name_2}"))
+
+    class(tbl_wide) <- c(pipeline, class(tbl_wide))
     return(tbl_wide)
 }
 
