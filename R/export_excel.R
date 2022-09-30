@@ -1,6 +1,7 @@
 #' Generic function
 #' 
 #' This generic function can take only the first argument as input and use the correct "method" automatically based on the class of the argument. 
+#' @export
 export_excel <- function(mdlvalr_list, ...) {
     UseMethod(generic = "export_excel", object = mdlvalr_list)
 }
@@ -12,6 +13,7 @@ export_excel <- function(mdlvalr_list, ...) {
 #'
 #'
 #'
+#' @export
 export_excel.hybcap <- function(mdlvalr_list, pipeline = "hybcap", filename_prefix = "") {
     for (i in seq_along(names(mdlvalr_list$comparisons))) {
         curr_comparison <- names(mdlvalr_list$comparisons)[i]

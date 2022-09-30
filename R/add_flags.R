@@ -5,7 +5,7 @@
 #' @param cds_table Tibble RefSeq gff that includes CDS regions. Must have column name: "type" that indicates the CDS or not.
 #'
 #' @return Returns the same var_tbl that was input, but includes additional column for CDS.
-#'
+#' @export
 add_cds_column <- function(var_tbl, cds_table) {
     cds_table_granges <- cds_table %>%
         dplyr::select(chr, start, end, type) %>%
@@ -37,6 +37,7 @@ add_cds_column <- function(var_tbl, cds_table) {
 #' Generic function
 #' 
 #' This generic function can take only the first argument as input and use the correct "method" automatically based on the class of the argument. 
+#' @export
 add_flags <- function(mdlvalr_list, ...) {
     UseMethod(generic = "add_flags", object = mdlvalr_list)
 }

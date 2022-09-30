@@ -11,7 +11,7 @@
 #' invisible(samples_tbl)
 #' sample_sheet <- validate_samples(samples_tbl, sample_name = "sample_name", sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", pipeline = "hybcap")
 #' 
-#' 
+#' @export 
 validate_samples <- function(samples_tbl, sample_name, sample_group, comparison_group, var_path, cov_path, pipeline) {
     tbl <- samples_tbl %>%
         dplyr::select(all_of(c(sample_name, sample_group, comparison_group, var_path, cov_path))) %>%

@@ -147,9 +147,8 @@ refseq_gff_unnest_with_chrom_cds <- refseq_gff_unnest_with_chrom_cds
 Run concordance
 
 ```{r}
-rm(mdlvalr_list)
 mdlvalr_list <- get_data(sample_sheet)
-mdlvalr_list <- add_flags(mdlvalr_list, cds_table = cds_table, var_pass_fail_logic = "VAF >= 0.05", cov_pass_fail_logic = "fraction_125x >= 0.9")
+mdlvalr_list <- add_flags(mdlvalr_list, cds_table = refseq_gff_unnest_with_chrom_cds, var_pass_fail_logic = "VAF >= 0.05", cov_pass_fail_logic = "fraction_125x >= 0.9")
 mdlvalr_list <- compare_vars(mdlvalr_list)
 mdlvalr_list <- add_var_labels(mdlvalr_list)
 # Filter tables here??

@@ -1,6 +1,7 @@
 #' Generic function
 #' 
 #' This generic function can take only the first argument as input and use the correct "method" automatically based on the class of the argument. 
+#' @export
 get_data <- function(sample_sheet, ...) {
     UseMethod(generic = "get_data", object = sample_sheet)
 }

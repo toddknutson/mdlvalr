@@ -1,6 +1,7 @@
 #' Generic function
 #' 
 #' This generic function can take only the first argument as input and use the correct "method" automatically based on the class of the argument. 
+#' @export
 compare_vars <- function(mdlvalr_list, ...) {
     UseMethod(generic = "compare_vars", object = mdlvalr_list)
 }
@@ -29,7 +30,7 @@ compare_vars <- function(mdlvalr_list, ...) {
 #'
 #' @return Returns a named list of tibbles or integers tibble sizes.
 #'
-#'
+#' @export
 compare_vars.hybcap <- function(
     mdlvalr_list,
     pipeline = "hybcap",
