@@ -20,8 +20,8 @@ export_excel.hybcap <- function(mdlvalr_list, pipeline = "hybcap", filename_pref
 
         flagged_names <- names(mdlvalr_list$comparisons[[i]]$flagged_data)
         flagged <- mdlvalr_list$comparisons[[i]]$flagged_data
-        #filtered_names <- names(mdlvalr_list$comparisons[[i]]$filtered_data)
-        #filtered <- mdlvalr_list$comparisons[[i]]$filtered_data
+        filtered_names <- names(mdlvalr_list$comparisons[[i]]$filtered_data)
+        filtered <- mdlvalr_list$comparisons[[i]]$filtered_data
         compared_names <- names(mdlvalr_list$comparisons[[i]]$compared_data)
         compared <- mdlvalr_list$comparisons[[i]]$compared_data
         labeled_names <- names(mdlvalr_list$comparisons[[i]]$labeled_data)
@@ -29,7 +29,7 @@ export_excel.hybcap <- function(mdlvalr_list, pipeline = "hybcap", filename_pref
         summary_tbl <- mdlvalr_list$comparisons[[i]]$summary %>%
               bind_rows()
 
-        out_list <- c(list(summary = summary_tbl), flagged, labeled)
+        out_list <- c(list(summary = summary_tbl), flagged, labeled, filtered)
         wb <- write.xlsx(out_list, file = glue("{filename_prefix}{curr_comparison}.xlsx"), overwrite = TRUE)
     }
     wb <- write.xlsx(list(all_samples = mdlvalr_list$summary), file = glue("{filename_prefix}all.xlsx"), overwrite = TRUE)
