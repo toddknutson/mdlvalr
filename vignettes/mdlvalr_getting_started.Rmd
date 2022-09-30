@@ -182,7 +182,7 @@ Explore the `mdlvalr_list` object
 glimpse(mdlvalr_list)
 
 # Print the summary stats table
-mdlvalr_list$summary %>% 
+mdlvalr_list$summary %>%
     print(width = Inf, n = 6)
 
 

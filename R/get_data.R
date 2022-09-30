@@ -1,13 +1,9 @@
 #' Read pipeline files into a list
 #'
-#' This generic function can take only the first argument as input and use the correct "method"
-#' automatically based on the class of the argument. 
-#'
-#'
 #' @export
 #' @param sample_sheet Name of the tibble or data.frame that contains sample
 #' info. The class of this object can be used to automatically determine which 
-#' funcion methods will be used.  
+#' function methods will be used.
 #' @param pipeline Standard name of the pipeline from which the data were derived.
 #'
 #' @section Methods:
@@ -16,7 +12,9 @@
 #' of the first argument will determine which method is used. See the documentation of
 #' individual methods for extra arguments and differences in behaviour.
 #'
-#' @return Returns a named list of tibbles (length = 2). The first is the variant table and the second is the exon coverage table. 
+#' @return Returns a standard `mdlvalr_list` object (i.e. a regular R list of lists) that contains tables as named list elements. 
+#' The class of the retuned object is updated to include the name of the pipeline. This facilitates use of alternative methods in 
+#' downstream functions. 
 #'
 #' @examples
 #' class(sample_sheet)

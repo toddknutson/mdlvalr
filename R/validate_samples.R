@@ -3,15 +3,18 @@
 #' `validate_samples()` takes an input table of sample data and uses important columns
 #' to generate a valid sample sheet that can be used as input to `get_data()`.
 #'
+#' @export
 #' @param samples_tbl Tibble of sample info. Requires five columns (listed below).
-#' @param sample_name Column name that specifies the sample names. [string].
-#' @param sample_group Column name that specifies the sample_group. [string].
-#' @param comparison_group Column name that specifies the comparison_group. [string].
-#' @param var_path Column name that specifies the variants table file path. [string].
-#' @param cov_path Column name that specifies the coverage table file path. [string].
-#' @param pipeline Name of pipeline that produced the data. One of c("hybcap", "exome", "germline"). 
+#' @param sample_name Column name that specifies the sample names.
+#' @param sample_group Column name that specifies the sample_group.
+#' @param comparison_group Column name that specifies the comparison_group.
+#' @param var_path Column name that specifies the variants table file path.
+#' @param cov_path Column name that specifies the coverage table file path.
+#' @param pipeline Name of pipeline that produced the data. One of c("hybcap", "exome", "germline").
 #' 
-#' @return Returns a sample sheet (tibble) of comparisons to make. This can be used as input to `get_data()`.  
+#' @return Returns a sample sheet (tibble) of comparisons to make. The class of the retuned object 
+#' is updated to include the name of the pipeline. This facilitates use of alternative methods in 
+#' downstream functions. This can be used as input to `get_data()`. 
 #'
 #' @examples
 #'
@@ -25,9 +28,8 @@
 #'    var_path = "filtered_path",
 #'    cov_path = "coverage_path",
 #'    pipeline = "hybcap")
-#' 
 #'
-#' @export 
+#'
 validate_samples <- function(samples_tbl, sample_name, sample_group, comparison_group, var_path, cov_path, pipeline) {
     tbl <- samples_tbl %>%
         dplyr::select(all_of(c(sample_name, sample_group, comparison_group, var_path, cov_path))) %>%
