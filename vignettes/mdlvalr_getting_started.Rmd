@@ -49,7 +49,7 @@ output_data_dir <- glue("{pipeline_name}_concordance_{curr_time}")
 Create and set a working dir.
 
 
-```
+```{r}
 if (!dir.exists(glue("{out_dir}/{pipeline_name}/{input_data_dir}"))) {dir.create(glue("{out_dir}/{pipeline_name}/{input_data_dir}"), recursive = TRUE)}
 setwd(glue("{out_dir}/{pipeline_name}/{input_data_dir}"))
 ```
@@ -58,7 +58,7 @@ setwd(glue("{out_dir}/{pipeline_name}/{input_data_dir}"))
 
 Find a set of files (tarballs) that were outputs from the pipeline. Untar and uncompress the data if necessary.
 
-```
+```{r}
 # Find example data included with mdlvalr package
 extdata_dir <- system.file("extdata", package = "mdlvalr", mustWork = TRUE)
 tar_files <- list.files(extdata_dir, pattern = "*.tar.gz", full.names = TRUE, recursive = TRUE)
@@ -126,11 +126,8 @@ setwd(glue("{out_dir}/{pipeline_name}/{output_data_dir}"))
 
 Use the `validate_samples()` function to create an standardized "sample sheet" for the concordance analysis. This function will return a new tibble of data needed by downstream functions and check various assumptions about the comparison groups. 
 
-```
+```{r}
 sample_sheet <- validate_samples(samples_tbl = samples_tbl, sample_name = "sample_name", sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", pipeline = "hybcap")
-
-# Write out input samples
-wb <- openxlsx::write.xlsx(list(sample_sheet = sample_sheet), file = glue("sample_sheet.xlsx"), overwrite = TRUE) 
 ```
 
 
@@ -139,21 +136,16 @@ wb <- openxlsx::write.xlsx(list(sample_sheet = sample_sheet), file = glue("sampl
 Run concordance
 
 ```{r}
-
+rm(mdlvalr_list)
 mdlvalr_list <- get_data(sample_sheet)
-
-
-
-
-
-
-
-
-
-
-out_data_list <- mdlvalr::all_sample_compare(samples_tbl = sample_info, sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", min_vaf = 0.05, min_fraction_125x = 0.9, cds_table = cds_table)
-
+mdlvalr_list <- add_flags(mdlvalr_list, cds_table = cds_table, var_pass_fail_logic = "VAF >= 0.05", cov_pass_fail_logic = "fraction_125x >= 0.9")
+mdlvalr_list <- compare_vars(mdlvalr_list)
+mdlvalr_list <- add_var_labels(mdlvalr_list)
+# Filter tables here??
+mdlvalr_list <- get_stats(mdlvalr_list)
 ```
+
+
 
 
 
@@ -162,9 +154,7 @@ Create out files
 
 
 ```{r}
-setwd(glue("{out_dir}/{proj_name}"))
-mdlvalr::out_files(out_data_list, filename_prefix = "vaf_0.05_")
-
+export_excel(mdlvalr_list, filename_prefix = "vaf_0.05_")
 ```
 
 
@@ -174,9 +164,8 @@ Zip up results
 
 
 ```{r}
-setwd(out_dir)
-system(glue("tar czvf {proj_name}.tar.gz {proj_name}"), intern = TRUE)
-
+setwd(glue("{out_dir}/{pipeline_name}"))
+system(glue("tar czvf {output_data_dir}.tar.gz {output_data_dir}"), intern = TRUE)
 ```
 
 
