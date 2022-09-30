@@ -4,12 +4,7 @@
 \alias{filter_data.hybcap}
 \title{Hybrid capture method function}
 \usage{
-\method{filter_data}{hybcap}(
-  mdlvalr_list,
-  pipeline = "hybcap",
-  var_flag_cols = c("vaf_gt_0.03"),
-  cov_flag_cols = c("fraction_125x_gt_0.9")
-)
+\method{filter_data}{hybcap}(mdlvalr_list, pipeline = "hybcap")
 }
 \arguments{
 \item{mdlvalr_list}{Name of the list to flag input data}

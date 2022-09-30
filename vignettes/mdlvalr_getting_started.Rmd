@@ -149,7 +149,7 @@ mdlvalr_list <- add_flags(mdlvalr_list,
     cov_pass_fail_logic = "fraction_125x >= 0.9")
 mdlvalr_list <- compare_vars(mdlvalr_list)
 mdlvalr_list <- add_var_labels(mdlvalr_list)
-# Filter tables here??
+mdlvalr_list <- filter_data(mdlvalr_list)
 mdlvalr_list <- get_stats(mdlvalr_list)
 ```
 
@@ -173,6 +173,21 @@ Zip up results
 ```{r}
 setwd(glue("{out_dir}/{pipeline_name}"))
 system(glue("tar czvf {output_data_dir}.tar.gz {output_data_dir}"), intern = TRUE)
+```
+
+Explore the `mdlvalr_list` object
+
+```{r}
+# Show the list-of-lists object
+glimpse(mdlvalr_list)
+
+# Print the summary stats table
+mdlvalr_list$summary %>% 
+    print(width = Inf, n = 6)
+
+
+# Names of the filtered table outputs for the first comparison
+names(mdlvalr_list$comparisons[[1]]$filtered_data)
 ```
 
 

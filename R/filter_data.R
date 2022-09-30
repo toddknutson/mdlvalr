@@ -2,6 +2,7 @@
 #' Generic function
 #' 
 #' This generic function can take only the first argument as input and use the correct "method" automatically based on the class of the argument. 
+#' @export
 filter_data <- function(mdlvalr_list, ...) {
     UseMethod(generic = "filter_data", object = mdlvalr_list)
 }
