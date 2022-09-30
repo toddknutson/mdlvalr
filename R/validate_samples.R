@@ -1,4 +1,9 @@
-#' Validate a table of sample info @param samples_tbl Tibble of sample info. Requires five columns (listed below).
+#' Validate an input table of sample info and generate sample sheet 
+#'
+#' `validate_samples()` takes an input table of sample data and uses important columns
+#' to generate a valid sample sheet that can be used as input to `get_data()`.
+#'
+#' @param samples_tbl Tibble of sample info. Requires five columns (listed below).
 #' @param sample_name Column name that specifies the sample names. [string].
 #' @param sample_group Column name that specifies the sample_group. [string].
 #' @param comparison_group Column name that specifies the comparison_group. [string].
@@ -6,11 +11,22 @@
 #' @param cov_path Column name that specifies the coverage table file path. [string].
 #' @param pipeline Name of pipeline that produced the data. One of c("hybcap", "exome", "germline"). 
 #' 
-#' 
+#' @return Returns a sample sheet (tibble) of comparisons to make. This can be used as input to `get_data()`.  
+#'
 #' @examples
+#'
+#' # The package provides example data `samples_tbl` that can be used for demo.
+#' # Call the example data to make it available. 
 #' invisible(samples_tbl)
-#' sample_sheet <- validate_samples(samples_tbl, sample_name = "sample_name", sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", pipeline = "hybcap")
+#' sample_sheet <- validate_samples(samples_tbl,
+#'    sample_name = "sample_name",
+#'    sample_group = "sample_name_short",
+#'    comparison_group = "group",
+#'    var_path = "filtered_path",
+#'    cov_path = "coverage_path",
+#'    pipeline = "hybcap")
 #' 
+#'
 #' @export 
 validate_samples <- function(samples_tbl, sample_name, sample_group, comparison_group, var_path, cov_path, pipeline) {
     tbl <- samples_tbl %>%
@@ -41,6 +57,4 @@ validate_samples <- function(samples_tbl, sample_name, sample_group, comparison_
     class(tbl_wide) <- c(pipeline, class(tbl_wide))
     return(tbl_wide)
 }
-
-
 

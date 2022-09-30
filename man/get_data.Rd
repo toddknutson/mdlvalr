@@ -2,10 +2,39 @@
 % Please edit documentation in R/get_data.R
 \name{get_data}
 \alias{get_data}
-\title{Generic function}
+\alias{get_data.hybcap}
+\title{Read pipeline files into a list}
 \usage{
-get_data(sample_sheet, ...)
+get_data(sample_sheet, pipeline = NULL)
+
+\method{get_data}{hybcap}(sample_sheet, pipeline = "hybcap")
+}
+\arguments{
+\item{sample_sheet}{Name of the tibble or data.frame that contains sample
+info. The class of this object can be used to automatically determine which
+funcion methods will be used.}
+
+\item{pipeline}{Standard name of the pipeline from which the data were derived.}
+}
+\value{
+Returns a named list of tibbles (length = 2). The first is the variant table and the second is the exon coverage table.
 }
 \description{
-This generic function can take only the first argument as input and use the correct "method" automatically based on the class of the argument.
+This generic function can take only the first argument as input and use the correct "method"
+automatically based on the class of the argument.
+}
+\section{Methods}{
+
+This function is a \strong{generic}, which means that different
+implementations (methods) can be executed for different classes. The class
+of the first argument will determine which method is used. See the documentation of
+individual methods for extra arguments and differences in behaviour.
+}
+
+\examples{
+class(sample_sheet)
+# [1] "hybcap" "tbl_df" "data.frame"
+
+mdlvalr_list <- get_data(sample_sheet)
+
 }

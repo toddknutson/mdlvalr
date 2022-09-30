@@ -2,7 +2,7 @@
 % Please edit documentation in R/validate_samples.R
 \name{validate_samples}
 \alias{validate_samples}
-\title{Validate a table of sample info @param samples_tbl Tibble of sample info. Requires five columns (listed below).}
+\title{Validate an input table of sample info and generate sample sheet}
 \usage{
 validate_samples(
   samples_tbl,
@@ -15,6 +15,8 @@ validate_samples(
 )
 }
 \arguments{
+\item{samples_tbl}{Tibble of sample info. Requires five columns (listed below).}
+
 \item{sample_name}{Column name that specifies the sample names. \link{string}.}
 
 \item{sample_group}{Column name that specifies the sample_group. \link{string}.}
@@ -27,11 +29,25 @@ validate_samples(
 
 \item{pipeline}{Name of pipeline that produced the data. One of c("hybcap", "exome", "germline").}
 }
+\value{
+Returns a sample sheet (tibble) of comparisons to make. This can be used as input to \code{get_data()}.
+}
 \description{
-Validate a table of sample info @param samples_tbl Tibble of sample info. Requires five columns (listed below).
+\code{validate_samples()} takes an input table of sample data and uses important columns
+to generate a valid sample sheet that can be used as input to \code{get_data()}.
 }
 \examples{
+
+# The package provides example data `samples_tbl` that can be used for demo.
+# Call the example data to make it available. 
 invisible(samples_tbl)
-sample_sheet <- validate_samples(samples_tbl, sample_name = "sample_name", sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", pipeline = "hybcap")
+sample_sheet <- validate_samples(samples_tbl,
+   sample_name = "sample_name",
+   sample_group = "sample_name_short",
+   comparison_group = "group",
+   var_path = "filtered_path",
+   cov_path = "coverage_path",
+   pipeline = "hybcap")
+
 
 }

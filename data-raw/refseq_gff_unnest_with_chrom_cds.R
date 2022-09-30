@@ -78,6 +78,6 @@ refseq_gff_unnest_with_chrom_cds <- refseq_gff_unnest_with_chrom %>%
 
 
 
-
+# This will write the output file to PACKAGE/data dir. 
 usethis::use_data(refseq_gff_unnest_with_chrom_cds, overwrite = TRUE)
 
