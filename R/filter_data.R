@@ -19,45 +19,64 @@ filter_data <- function(mdlvalr_list, ...) {
 #' @export
 filter_data.hybcap <- function(
     mdlvalr_list,
-    pipeline = "hybcap",
-    var_flag_cols = c("vaf_gt_0.03"),
-    cov_flag_cols = c("fraction_125x_gt_0.9")) {
+    pipeline = "hybcap") {
 
     for (i in seq_along(names(mdlvalr_list$comparisons))) {
-        var_1_pass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_1 %>%
-            dplyr::filter(if_all(all_of(var_flag_cols), ~ str_detect(.x, "^yes$")))
+        # Samples that pass
+        vars_in_s1pass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_1 %>%
+            dplyr::filter(var_pass_fail == "pass")
+        vars_in_s2pass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_2 %>%
+            dplyr::filter(var_pass_fail == "pass")
 
-        var_1_notpass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_1 %>%
-            dplyr::filter(if_any(all_of(var_flag_cols), ~ str_detect(.x, "^no$")))
 
-        var_2_pass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_2 %>%
-            dplyr::filter(if_all(all_of(var_flag_cols), ~ str_detect(.x, "^yes$")))
-             
-        var_2_notpass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_2 %>%
-            dplyr::filter(if_any(all_of(var_flag_cols), ~ str_detect(.x, "^no$")))
-       
-        cov_1_pass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
-            dplyr::filter(if_all(all_of(cov_flag_cols), ~ str_detect(.x, "^yes$")))
-            
-        cov_1_notpass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
-            dplyr::filter(if_any(all_of(cov_flag_cols), ~ str_detect(.x, "^no$")))
+        # Vars common to both samples
+        vars_in_common_s1pass_s2pass <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            dplyr::filter(vars_in_common_s1pass_s2pass == "yes")
+        vars_in_common_s1pass_s2fail <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            dplyr::filter(vars_in_common_s1pass_s2fail == "yes")
+        vars_in_common_s1fail_s2pass <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            dplyr::filter(vars_in_common_s1fail_s2pass == "yes")
+        vars_in_common_s1fail_s2fail <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            dplyr::filter(vars_in_common_s1fail_s2fail == "yes")
 
-        cov_2_pass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
-            dplyr::filter(if_all(all_of(cov_flag_cols), ~ str_detect(.x, "^yes$")))
 
-        cov_2_notpass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
-            dplyr::filter(if_any(all_of(cov_flag_cols), ~ str_detect(.x, "^no$")))
+        # Vars in one sample but not the other
+        vars_in_s1pass_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
+            dplyr::filter(vars_in_s1pass_not_in_s2 == "yes")
+        vars_in_s1fail_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
+            dplyr::filter(vars_in_s1fail_not_in_s2 == "yes")
+
+        vars_in_s2pass_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
+            dplyr::filter(vars_in_s2pass_not_in_s1 == "yes")
+        vars_in_s2fail_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
+            dplyr::filter(vars_in_s2fail_not_in_s1 == "yes")
+
+
+        exons_in_s1pass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
+            dplyr::filter(cov_pass_fail == "pass")
+        exons_in_s2pass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
+            dplyr::filter(cov_pass_fail == "pass")
+        exons_in_s1fail <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
+            dplyr::filter(cov_pass_fail == "fail")
+        exons_in_s2fail <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
+            dplyr::filter(cov_pass_fail == "fail")
 
 
         mdlvalr_list$comparisons[[i]]$filtered_data <- list(
-            var_1_pass = var_1_pass,
-            var_1_notpass = var_1_notpass,
-            var_2_pass = var_2_pass,
-            var_2_notpass = var_2_notpass,
-            cov_1_pass = cov_1_pass,
-            cov_1_notpass = cov_1_notpass,
-            cov_2_pass = cov_2_pass,
-            cov_2_notpass = cov_2_notpass
+            vars_in_s1pass = vars_in_s1pass,
+            vars_in_s2pass = vars_in_s2pass,
+            vars_in_common_s1pass_s2pass = vars_in_common_s1pass_s2pass,
+            vars_in_common_s1pass_s2fail = vars_in_common_s1pass_s2fail,
+            vars_in_common_s1fail_s2pass = vars_in_common_s1fail_s2pass,
+            vars_in_common_s1fail_s2fail = vars_in_common_s1fail_s2fail,
+            vars_in_s1pass_not_in_s2 = vars_in_s1pass_not_in_s2,
+            vars_in_s1fail_not_in_s2 = vars_in_s1fail_not_in_s2,
+            vars_in_s2pass_not_in_s1 = vars_in_s2pass_not_in_s1,
+            vars_in_s2fail_not_in_s1 = vars_in_s2fail_not_in_s1,
+            exons_in_s1pass = exons_in_s1pass,
+            exons_in_s2pass = exons_in_s2pass,
+            exons_in_s1fail = exons_in_s1fail,
+            exons_in_s2fail = exons_in_s2fail 
         )
     } 
     class(mdlvalr_list) <- class(mdlvalr_list)

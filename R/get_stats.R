@@ -33,11 +33,9 @@ get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
             nrow()
         n_vars_in_s2 <- mdlvalr_list$comparisons[[i]]$flagged_data$var_2 %>%
             nrow()
-        n_vars_in_s1pass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_1 %>%
-            dplyr::filter(var_pass_fail == "pass") %>%
+        n_vars_in_s1pass <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s1pass %>%
             nrow()
-        n_vars_in_s2pass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_2 %>%
-            dplyr::filter(var_pass_fail == "pass") %>%
+        n_vars_in_s2pass <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s2pass %>%
             nrow()
 
 
@@ -46,17 +44,13 @@ get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
         # Vars common to both samples
         n_vars_in_common <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
             nrow()
-        n_vars_in_common_s1pass_s2pass <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
-            dplyr::filter(vars_in_common_s1pass_s2pass == "yes") %>%
+        n_vars_in_common_s1pass_s2pass <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_common_s1pass_s2pass %>%
             nrow()
-        n_vars_in_common_s1pass_s2fail <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
-            dplyr::filter(vars_in_common_s1pass_s2fail == "yes") %>%
+        n_vars_in_common_s1pass_s2fail <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_common_s1pass_s2fail %>%
             nrow()
-        n_vars_in_common_s1fail_s2pass <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
-            dplyr::filter(vars_in_common_s1fail_s2pass == "yes") %>%
+        n_vars_in_common_s1fail_s2pass <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_common_s1fail_s2pass %>%
             nrow()
-        n_vars_in_common_s1fail_s2fail <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
-            dplyr::filter(vars_in_common_s1fail_s2fail == "yes") %>%
+        n_vars_in_common_s1fail_s2fail <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_common_s1fail_s2fail %>%
             nrow()
 
 
@@ -67,29 +61,17 @@ get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
         # Vars in one sample but not the other
         n_vars_in_s1_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
             nrow()
-        n_vars_in_s1pass_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
-            dplyr::filter(vars_in_s1pass_not_in_s2 == "yes") %>%
+        n_vars_in_s1pass_not_in_s2 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s1pass_not_in_s2 %>%
             nrow()
-        n_vars_in_s1fail_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
-            dplyr::filter(vars_in_s1fail_not_in_s2 == "yes") %>%
+        n_vars_in_s1fail_not_in_s2 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s1fail_not_in_s2 %>%
             nrow()
 
         n_vars_in_s2_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
             nrow()
-        n_vars_in_s2pass_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
-            dplyr::filter(vars_in_s2pass_not_in_s1 == "yes") %>%
+        n_vars_in_s2pass_not_in_s1 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s2pass_not_in_s1 %>%
             nrow()
-        n_vars_in_s2fail_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
-            dplyr::filter(vars_in_s2fail_not_in_s1 == "yes") %>%
+        n_vars_in_s2fail_not_in_s1 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s2fail_not_in_s1 %>%
             nrow()
-
-
-
-
-
-
-
-
 
 
 
@@ -97,17 +79,13 @@ get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
             nrow()
         n_exons_in_s2 <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
             nrow()
-        n_exons_in_s1pass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
-            dplyr::filter(cov_pass_fail == "pass") %>%
+        n_exons_in_s1pass <- mdlvalr_list$comparisons[[i]]$filtered_data$exons_in_s1pass %>%
             nrow()
-        n_exons_in_s2pass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
-            dplyr::filter(cov_pass_fail == "pass") %>%
+        n_exons_in_s2pass <- mdlvalr_list$comparisons[[i]]$filtered_data$exons_in_s2pass %>%
             nrow()
-        n_exons_in_s1fail <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
-            dplyr::filter(cov_pass_fail == "fail") %>%
+        n_exons_in_s1fail <- mdlvalr_list$comparisons[[i]]$filtered_data$exons_in_s1fail %>%
             nrow()
-        n_exons_in_s2fail <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
-            dplyr::filter(cov_pass_fail == "fail") %>%
+        n_exons_in_s2fail <- mdlvalr_list$comparisons[[i]]$filtered_data$exons_in_s2fail %>%
             nrow()
         
         # Number of vars in common divided by all possible variants. Include vars that pass in only one sample.
