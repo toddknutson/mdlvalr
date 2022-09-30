@@ -1,0 +1,183 @@
+
+#' Generic function
+#' 
+#' This generic function can take only the first argument as input and use the correct "method" automatically based on the class of the argument. 
+get_stats <- function(mdlvalr_list, ...) {
+    UseMethod(generic = "get_stats", object = mdlvalr_list)
+}
+
+
+
+
+#' Capture summary stats from the comparisons
+#'
+#' @param flag_column_pass Column name to be used for filtering variant calls that pass or not. Only variants rows with a "yes" in this column will be used for calculating pass variants. Another possible option is "vaf_gt_0.05". 
+#'
+#' @return Returns a named list of tibbles or integers tibble sizes.
+#'
+#'
+get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
+    for (i in seq_along(names(mdlvalr_list$comparisons))) {
+        # Samples
+        comparison_name <- names(mdlvalr_list$comparisons)[i]
+        s1_name <- mdlvalr_list$sample_sheet %>% 
+            slice(i) %>%
+            pull(comparison_name_1)
+        s2_name <- mdlvalr_list$sample_sheet %>% 
+            slice(i) %>%
+            pull(comparison_name_2)
+       
+        # Vars in each sample
+        n_vars_in_s1 <- mdlvalr_list$comparisons[[i]]$flagged_data$var_1 %>%
+            nrow()
+        n_vars_in_s2 <- mdlvalr_list$comparisons[[i]]$flagged_data$var_2 %>%
+            nrow()
+        n_vars_in_s1pass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_1 %>%
+            dplyr::filter(var_pass_fail == "pass") %>%
+            nrow()
+        n_vars_in_s2pass <- mdlvalr_list$comparisons[[i]]$flagged_data$var_2 %>%
+            dplyr::filter(var_pass_fail == "pass") %>%
+            nrow()
+
+
+
+
+        # Vars common to both samples
+        n_vars_in_common <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            nrow()
+        n_vars_in_common_s1pass_s2pass <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            dplyr::filter(vars_in_common_s1pass_s2pass == "yes") %>%
+            nrow()
+        n_vars_in_common_s1pass_s2fail <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            dplyr::filter(vars_in_common_s1pass_s2fail == "yes") %>%
+            nrow()
+        n_vars_in_common_s1fail_s2pass <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            dplyr::filter(vars_in_common_s1fail_s2pass == "yes") %>%
+            nrow()
+        n_vars_in_common_s1fail_s2fail <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_common %>%
+            dplyr::filter(vars_in_common_s1fail_s2fail == "yes") %>%
+            nrow()
+
+
+
+
+
+
+        # Vars in one sample but not the other
+        n_vars_in_s1_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
+            nrow()
+        n_vars_in_s1pass_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
+            dplyr::filter(vars_in_s1pass_not_in_s2 == "yes") %>%
+            nrow()
+        n_vars_in_s1fail_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
+            dplyr::filter(vars_in_s1fail_not_in_s2 == "yes") %>%
+            nrow()
+
+        n_vars_in_s2_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
+            nrow()
+        n_vars_in_s2pass_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
+            dplyr::filter(vars_in_s2pass_not_in_s1 == "yes") %>%
+            nrow()
+        n_vars_in_s2fail_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
+            dplyr::filter(vars_in_s2fail_not_in_s1 == "yes") %>%
+            nrow()
+
+
+
+
+
+
+
+
+
+
+
+        n_exons_in_s1 <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
+            nrow()
+        n_exons_in_s2 <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
+            nrow()
+        n_exons_in_s1pass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
+            dplyr::filter(cov_pass_fail == "pass") %>%
+            nrow()
+        n_exons_in_s2pass <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
+            dplyr::filter(cov_pass_fail == "pass") %>%
+            nrow()
+        n_exons_in_s1fail <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_1 %>%
+            dplyr::filter(cov_pass_fail == "fail") %>%
+            nrow()
+        n_exons_in_s2fail <- mdlvalr_list$comparisons[[i]]$flagged_data$cov_2 %>%
+            dplyr::filter(cov_pass_fail == "fail") %>%
+            nrow()
+        
+        # Number of vars in common divided by all possible variants. Include vars that pass in only one sample.
+        frac_concordance_raw <- format(round(
+                n_vars_in_common_s1pass_s2pass /
+                (sum(n_vars_in_common_s1pass_s2pass,
+                     n_vars_in_common_s1pass_s2fail,
+                     n_vars_in_common_s1fail_s2pass,
+                     n_vars_in_s1pass_not_in_s2,
+                     n_vars_in_s2pass_not_in_s1)
+                ),
+            3), nsmall = 2)
+        # Number of vars in common divided by all possible variants. Do not include vars that pass in only one sample.
+        frac_concordance_corrected <- format(round(
+                n_vars_in_common_s1pass_s2pass /
+                (sum(n_vars_in_common_s1pass_s2pass,
+                     n_vars_in_s1pass_not_in_s2,
+                     n_vars_in_s2pass_not_in_s1)
+                ),
+            3), nsmall = 2)
+        frac_discrep_threshold <- format(round(
+                sum(n_vars_in_common_s1pass_s2fail,
+                    n_vars_in_common_s1fail_s2pass) /
+                sum(n_vars_in_s1pass_not_in_s2,
+                    n_vars_in_s2pass_not_in_s1),
+            3), nsmall = 2)
+        frac_exons_fail_s1 <- format(round(
+                n_exons_in_s1fail / n_exons_in_s1,
+            3), nsmall = 2)
+        frac_exons_fail_s2 <- format(round(
+                n_exons_in_s2fail / n_exons_in_s2,
+            3), nsmall = 2)
+
+
+        mdlvalr_list$comparisons[[i]]$summary <- list(
+            comparison_name = comparison_name,
+            s1_name = s1_name,
+            s2_name = s2_name,
+            n_vars_in_s1 = n_vars_in_s1,
+            n_vars_in_s2 = n_vars_in_s2,
+            n_vars_in_s1pass = n_vars_in_s1pass,
+            n_vars_in_s2pass = n_vars_in_s2pass,
+            n_vars_in_common = n_vars_in_common,
+            n_vars_in_common_s1pass_s2pass = n_vars_in_common_s1pass_s2pass,
+            n_vars_in_common_s1pass_s2fail = n_vars_in_common_s1pass_s2fail, 
+            n_vars_in_common_s1fail_s2pass = n_vars_in_common_s1fail_s2pass,
+            n_vars_in_common_s1fail_s2fail = n_vars_in_common_s1fail_s2fail,
+            n_vars_in_s1_not_in_s2 = n_vars_in_s1_not_in_s2,
+            n_vars_in_s1pass_not_in_s2 = n_vars_in_s1pass_not_in_s2,
+            n_vars_in_s1fail_not_in_s2 = n_vars_in_s1fail_not_in_s2,
+            n_vars_in_s2_not_in_s1 = n_vars_in_s2_not_in_s1,
+            n_vars_in_s2pass_not_in_s1 = n_vars_in_s2pass_not_in_s1,
+            n_vars_in_s2fail_not_in_s1 = n_vars_in_s2fail_not_in_s1,
+            n_exons_in_s1 = n_exons_in_s1, 
+            n_exons_in_s2 = n_exons_in_s2,
+            n_exons_in_s1pass = n_exons_in_s1pass,
+            n_exons_in_s2pass = n_exons_in_s2pass,
+            n_exons_in_s1fail = n_exons_in_s1fail,
+            n_exons_in_s2fail = n_exons_in_s2fail,
+            frac_concordance_raw = frac_concordance_raw,
+            frac_concordance_corrected = frac_concordance_corrected,
+            frac_discrep_threshold = frac_discrep_threshold,
+            frac_exons_fail_s1 = frac_exons_fail_s1,
+            frac_exons_fail_s2 = frac_exons_fail_s2
+        )
+    }
+    # Collapse all comparisons into a single summary table
+    mdlvalr_list$summary <- lapply(mdlvalr_list$comparisons, FUN = function(x) {x$summary}) %>%
+        bind_rows() 
+
+    class(mdlvalr_list) <- class(mdlvalr_list)
+    return(mdlvalr_list)
+}
+
