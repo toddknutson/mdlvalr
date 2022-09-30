@@ -16,7 +16,9 @@ Suggests:
 Imports:
     openxlsx,
     glue,
-    tidyverse
+    tidyverse,
+    plyranges,
+    rtracklayer
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
