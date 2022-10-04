@@ -12,16 +12,17 @@ get_data(sample_sheet, pipeline = NULL)
 \arguments{
 \item{sample_sheet}{Name of the tibble or data.frame that contains sample
 info. The class of this object can be used to automatically determine which
-funcion methods will be used.}
+function methods will be used.}
 
 \item{pipeline}{Standard name of the pipeline from which the data were derived.}
 }
 \value{
-Returns a named list of tibbles (length = 2). The first is the variant table and the second is the exon coverage table.
+Returns a standard \code{mdlvalr_list} object (i.e. a regular R list of lists) that contains tables as named list elements.
+The class of the retuned object is updated to include the name of the pipeline. This facilitates use of alternative methods in
+downstream functions.
 }
 \description{
-This generic function can take only the first argument as input and use the correct "method"
-automatically based on the class of the argument.
+Read pipeline files into a list
 }
 \section{Methods}{
 

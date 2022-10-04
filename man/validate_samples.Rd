@@ -17,20 +17,22 @@ validate_samples(
 \arguments{
 \item{samples_tbl}{Tibble of sample info. Requires five columns (listed below).}
 
-\item{sample_name}{Column name that specifies the sample names. \link{string}.}
+\item{sample_name}{Column name that specifies the sample names.}
 
-\item{sample_group}{Column name that specifies the sample_group. \link{string}.}
+\item{sample_group}{Column name that specifies the sample_group.}
 
-\item{comparison_group}{Column name that specifies the comparison_group. \link{string}.}
+\item{comparison_group}{Column name that specifies the comparison_group.}
 
-\item{var_path}{Column name that specifies the variants table file path. \link{string}.}
+\item{var_path}{Column name that specifies the variants table file path.}
 
-\item{cov_path}{Column name that specifies the coverage table file path. \link{string}.}
+\item{cov_path}{Column name that specifies the coverage table file path.}
 
 \item{pipeline}{Name of pipeline that produced the data. One of c("hybcap", "exome", "germline").}
 }
 \value{
-Returns a sample sheet (tibble) of comparisons to make. This can be used as input to \code{get_data()}.
+Returns a sample sheet (tibble) of comparisons to make. The class of the retuned object
+is updated to include the name of the pipeline. This facilitates use of alternative methods in
+downstream functions. This can be used as input to \code{get_data()}.
 }
 \description{
 \code{validate_samples()} takes an input table of sample data and uses important columns

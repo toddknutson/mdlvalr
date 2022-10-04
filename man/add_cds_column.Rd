@@ -2,18 +2,18 @@
 % Please edit documentation in R/add_flags.R
 \name{add_cds_column}
 \alias{add_cds_column}
-\title{Add a column indicating whether variant overlaps with a CDS region}
+\title{Add a within CDS flag column to var table}
 \usage{
 add_cds_column(var_tbl, cds_table)
 }
 \arguments{
-\item{var_tbl}{Tibble of variants. Must have columns named: chr, start, end, type.}
+\item{var_tbl}{Tibble of variants. Must have columns named: "chr", "start", and "end". Must not have a column named "type", as that is the column being joined from the \code{cds_table}.}
 
-\item{cds_table}{Tibble RefSeq gff that includes CDS regions. Must have column name: "type" that indicates the CDS or not.}
+\item{cds_table}{Tibble RefSeq gff that includes CDS regions. Must have column name: "chr", "start", "end", and "type" that indicates the CDS or not.}
 }
 \value{
-Returns the same var_tbl that was input, but includes additional column for CDS.
+Returns the same var_tbl that was input, but includes additional column named "within_refseq_cds" to indicate the variant start position overlaps with a CDS region.
 }
 \description{
-Add a column indicating whether variant overlaps with a CDS region
+Add a column to a variant table that indicates whether the start position of the variant is within a refseq CDS region.
 }

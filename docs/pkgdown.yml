@@ -3,7 +3,7 @@ pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   mdlvalr_getting_started: mdlvalr_getting_started.html
-last_built: 2022-09-30T18:52Z
+last_built: 2022-10-04T20:19Z
 urls:
   reference: https://pages.github.umn.edu/knut0297org/mdlvalr/index.html/reference
   article: https://pages.github.umn.edu/knut0297org/mdlvalr/index.html/articles
