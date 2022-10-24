@@ -69,12 +69,16 @@ get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
             nrow()
         n_vars_in_s1pass_not_in_s2 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s1pass_not_in_s2 %>%
             nrow()
+        n_vars_in_s1pass_in_cds_not_in_s2 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s1pass_in_cds_not_in_s2 %>%
+            nrow()
         n_vars_in_s1fail_not_in_s2 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s1fail_not_in_s2 %>%
             nrow()
 
         n_vars_in_s2_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
             nrow()
         n_vars_in_s2pass_not_in_s1 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s2pass_not_in_s1 %>%
+            nrow()
+        n_vars_in_s2pass_in_cds_not_in_s1 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s2pass_in_cds_not_in_s1 %>%
             nrow()
         n_vars_in_s2fail_not_in_s1 <- mdlvalr_list$comparisons[[i]]$filtered_data$vars_in_s2fail_not_in_s1 %>%
             nrow()
@@ -105,11 +109,20 @@ get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
                 ),
             3), nsmall = 2)
         # Number of vars in common divided by all possible variants. Do not include vars that pass in only one sample.
-        frac_concordance_corrected <- format(round(
+        frac_concordance_threshold <- format(round(
                 n_vars_in_common_s1pass_s2pass /
                 (sum(n_vars_in_common_s1pass_s2pass,
                      n_vars_in_s1pass_not_in_s2,
                      n_vars_in_s2pass_not_in_s1)
+                ),
+            3), nsmall = 2)
+        # Number of vars in common divided by all possible variants. Do not include vars that pass in only one sample.
+        # Do not include variants found outside the CDS regions. 
+        frac_concordance_corrected <- format(round(
+                n_vars_in_common_s1pass_s2pass /
+                (sum(n_vars_in_common_s1pass_s2pass,
+                     n_vars_in_s1pass_in_cds_not_in_s2,
+                     n_vars_in_s2pass_in_cds_not_in_s1)
                 ),
             3), nsmall = 2)
         frac_discrep_threshold <- format(round(
@@ -136,14 +149,16 @@ get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
             n_vars_in_s2pass = n_vars_in_s2pass,
             n_vars_in_common = n_vars_in_common,
             n_vars_in_common_s1pass_s2pass = n_vars_in_common_s1pass_s2pass,
-            n_vars_in_common_s1pass_s2fail = n_vars_in_common_s1pass_s2fail, 
+            n_vars_in_common_s1pass_s2fail = n_vars_in_common_s1pass_s2fail,
             n_vars_in_common_s1fail_s2pass = n_vars_in_common_s1fail_s2pass,
             n_vars_in_common_s1fail_s2fail = n_vars_in_common_s1fail_s2fail,
             n_vars_in_s1_not_in_s2 = n_vars_in_s1_not_in_s2,
             n_vars_in_s1pass_not_in_s2 = n_vars_in_s1pass_not_in_s2,
+            n_vars_in_s1pass_in_cds_not_in_s2 = n_vars_in_s1pass_in_cds_not_in_s2,
             n_vars_in_s1fail_not_in_s2 = n_vars_in_s1fail_not_in_s2,
             n_vars_in_s2_not_in_s1 = n_vars_in_s2_not_in_s1,
             n_vars_in_s2pass_not_in_s1 = n_vars_in_s2pass_not_in_s1,
+            n_vars_in_s2pass_in_cds_not_in_s1 = n_vars_in_s2pass_in_cds_not_in_s1,
             n_vars_in_s2fail_not_in_s1 = n_vars_in_s2fail_not_in_s1,
             n_exons_in_s1 = n_exons_in_s1, 
             n_exons_in_s2 = n_exons_in_s2,
@@ -152,6 +167,7 @@ get_stats.hybcap <- function(mdlvalr_list, pipeline = "hybcap") {
             n_exons_in_s1fail = n_exons_in_s1fail,
             n_exons_in_s2fail = n_exons_in_s2fail,
             frac_concordance_raw = frac_concordance_raw,
+            frac_concordance_threshold = frac_concordance_threshold,
             frac_concordance_corrected = frac_concordance_corrected,
             frac_discrep_threshold = frac_discrep_threshold,
             frac_exons_fail_s1 = frac_exons_fail_s1,

@@ -59,11 +59,17 @@ filter_data.hybcap <- function(
         # Vars in one sample but not the other
         vars_in_s1pass_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
             dplyr::filter(vars_in_s1pass_not_in_s2 == "yes")
+        vars_in_s1pass_in_cds_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
+            dplyr::filter(vars_in_s1pass_not_in_s2 == "yes") %>%
+            dplyr::filter(within_refseq_cds == "yes")
         vars_in_s1fail_not_in_s2 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s1_not_in_s2 %>%
             dplyr::filter(vars_in_s1fail_not_in_s2 == "yes")
 
         vars_in_s2pass_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
             dplyr::filter(vars_in_s2pass_not_in_s1 == "yes")
+        vars_in_s2pass_in_cds_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
+            dplyr::filter(vars_in_s2pass_not_in_s1 == "yes") %>%
+            dplyr::filter(within_refseq_cds == "yes")
         vars_in_s2fail_not_in_s1 <- mdlvalr_list$comparisons[[i]]$labeled_data$vars_in_s2_not_in_s1 %>%
             dplyr::filter(vars_in_s2fail_not_in_s1 == "yes")
 
