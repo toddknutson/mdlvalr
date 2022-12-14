@@ -16,7 +16,7 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("plyranges")
 
 # Install mdlvalr
-remotes::install_github("knut0297org/mdlvalr", host = "github.umn.edu/api/v3", auth_token = "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")
+remotes::install_github("msi/mdlvalr", host = "github.umn.edu/api/v3", auth_token = "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")
 ```
 
 ## Notes
