@@ -46,25 +46,10 @@ add_flags.hybcap <- function(mdlvalr_list,
         var_pass_fail_logic = "TRUE", 
         cov_pass_fail_logic = "TRUE") {
     for (i in seq_along(names(mdlvalr_list$comparisons))) {
-        # Add some helpful flag columns to indicate common VAF thresholds
-        var_1 <- mdlvalr_list$comparisons[[i]]$input_data$var_1 %>%
-            dplyr::mutate(vaf_gt_0.03 = if_else(VAF >= 0.03, "yes", "no")) %>%
-            dplyr::mutate(vaf_gt_0.05 = if_else(VAF >= 0.05, "yes", "no"))
-        var_2 <- mdlvalr_list$comparisons[[i]]$input_data$var_2 %>%
-            dplyr::mutate(vaf_gt_0.03 = if_else(VAF >= 0.03, "yes", "no")) %>%
-            dplyr::mutate(vaf_gt_0.05 = if_else(VAF >= 0.05, "yes", "no"))
-                
         if (!is.null(cds_table)) {
             var_1 <- add_cds_column(var_1, cds_table)
             var_2 <- add_cds_column(var_2, cds_table)
         }
-        
-        # Add some helpful flag columns to indicate common coverage metrics
-        cov_1 <- mdlvalr_list$comparisons[[i]]$input_data$cov_1 %>%
-            dplyr::mutate(fraction_125x_gt_0.9 = if_else(fraction_125x >= 0.9, "yes", "no"))
-            
-        cov_2 <- mdlvalr_list$comparisons[[i]]$input_data$cov_2 %>%
-            dplyr::mutate(fraction_125x_gt_0.9 = if_else(fraction_125x >= 0.9, "yes", "no"))
         
         # Add variant table pass/fail flag column depending on input logic
         var_1 <- var_1 %>%
