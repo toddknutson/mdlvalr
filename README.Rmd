@@ -1,8 +1,23 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
 # mdlvalr <img src="man/figures/logo.png" align="right" alt="" width="120" /> 
 
 This R package can be used to facilitate validation of MDL pipelines with R.
 
-## Install
+## Installation
 
 Installing the package from a GitHub Enterprise (organization) account requires a few extra arguments, including an [authorization token](https://docs.github.com/en/enterprise-server@3.2/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). The authorization token is set to expire on 2023-09-30. Please let me know if it is expired or you have any other issues installing from GitHub. 
 
@@ -18,6 +33,36 @@ BiocManager::install("plyranges")
 # Install mdlvalr
 remotes::install_github("msi/mdlvalr", host = "github.umn.edu/api/v3", auth_token = "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")
 ```
+
+## Example
+
+```{r, warning = FALSE, message = FALSE}
+library(mdlvalr)
+library(tidyverse)
+library(glue)
+library(openxlsx)
+library(plyranges)
+
+sample_sheet <- validate_samples(samples_tbl = samples_tbl, sample_name = "sample_name", sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", pipeline = "hybcap")
+
+# Load RefSeq GFF dataset (supplied with R package)
+# Assign lazy data object to variable
+refseq_gff_unnest_with_chrom_cds <- refseq_gff_unnest_with_chrom_cds 
+
+# Run concordance
+
+mdlvalr_list <- get_data(sample_sheet)
+mdlvalr_list <- add_flags(mdlvalr_list,
+    cds_table = refseq_gff_unnest_with_chrom_cds,
+    var_pass_fail_logic = "VAF >= 0.05",
+    cov_pass_fail_logic = "fraction_125x >= 0.9")
+mdlvalr_list <- compare_vars(mdlvalr_list)
+mdlvalr_list <- add_var_labels(mdlvalr_list)
+mdlvalr_list <- filter_data(mdlvalr_list)
+mdlvalr_list <- get_stats(mdlvalr_list)
+```
+
+
 
 ## Notes
 
