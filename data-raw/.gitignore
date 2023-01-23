@@ -1,0 +1,4 @@
+*.gff
+*.gff.gz
+*.slurm.e*
+*.slurm.o*
