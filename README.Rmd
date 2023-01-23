@@ -23,7 +23,7 @@ Installing the package from a GitHub Enterprise (organization) account requires 
 
 The package also depends on the `plyranges` R package from Bioconductor. So make sure that is installed first.
 
-```{r}
+```{r, eval = FALSE}
 # If you need to install plyranges
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -36,40 +36,14 @@ remotes::install_github("msi/mdlvalr", host = "github.umn.edu/api/v3", auth_toke
 
 ## Example
 
-```{r, warning = FALSE, message = FALSE}
-library(mdlvalr)
-library(tidyverse)
-library(glue)
-library(openxlsx)
-library(plyranges)
-
-sample_sheet <- validate_samples(samples_tbl = samples_tbl, sample_name = "sample_name", sample_group = "sample_name_short", comparison_group = "group", var_path = "filtered_path", cov_path = "coverage_path", pipeline = "hybcap")
-
-# Load RefSeq GFF dataset (supplied with R package)
-# Assign lazy data object to variable
-refseq_gff_unnest_with_chrom_cds <- refseq_gff_unnest_with_chrom_cds 
-
-# Run concordance
-
-mdlvalr_list <- get_data(sample_sheet)
-mdlvalr_list <- add_flags(mdlvalr_list,
-    cds_table = refseq_gff_unnest_with_chrom_cds,
-    var_pass_fail_logic = "VAF >= 0.05",
-    cov_pass_fail_logic = "fraction_125x >= 0.9")
-mdlvalr_list <- compare_vars(mdlvalr_list)
-mdlvalr_list <- add_var_labels(mdlvalr_list)
-mdlvalr_list <- filter_data(mdlvalr_list)
-mdlvalr_list <- get_stats(mdlvalr_list)
-```
-
 
 
 ## Notes
 
 This package uses generic functions with pipeline specific methods. To explore the source code within R, try the following examples.
 
-```{r}
-library(mdlvlar)
+```{r, eval = FALSE}
+library(mdlvalr)
 
 # List the available methods for this generic function
 methods(compare_vars)
