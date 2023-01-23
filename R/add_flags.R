@@ -20,9 +20,9 @@
 #' downstream functions. 
 #'
 #' @examples
+#' \dontrun{
 #' class(mdlvalr_list)
 #' # [1] "hybcap" "list"
-#' \notrun{
 #' mdlvalr_list <- add_flags(mdlvalr_list,
 #'     cds_table,
 #'     var_pass_fail_logic = "VAF >= 0.05",
@@ -46,6 +46,12 @@ add_flags.hybcap <- function(mdlvalr_list,
         var_pass_fail_logic = "TRUE", 
         cov_pass_fail_logic = "TRUE") {
     for (i in seq_along(names(mdlvalr_list$comparisons))) {
+        # Get input tables
+        var_1 <- mdlvalr_list$comparisons[[i]]$input_data$var_1
+        var_2 <- mdlvalr_list$comparisons[[i]]$input_data$var_2
+        cov_1 <- mdlvalr_list$comparisons[[i]]$input_data$cov_1
+        cov_2 <- mdlvalr_list$comparisons[[i]]$input_data$cov_2
+
         if (!is.null(cds_table)) {
             var_1 <- add_cds_column(var_1, cds_table)
             var_2 <- add_cds_column(var_2, cds_table)
