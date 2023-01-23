@@ -2,3 +2,5 @@ url: https://pages.github.umn.edu/msi/mdlvalr/index.html
 template:
   bootstrap: 5
 
+development:
+  mode: auto
