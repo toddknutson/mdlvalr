@@ -19,9 +19,9 @@
 #' downstream functions. 
 #'
 #' @examples
+#' \dontrun{
 #' class(mdlvalr_list)
 #' # [1] "hybcap" "list"
-#' \notrun{
 #' mdlvalr_list <- compare_vars(
 #'     mdlvalr_list,
 #'     pipeline = "hybcap",

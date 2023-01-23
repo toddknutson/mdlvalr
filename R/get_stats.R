@@ -17,11 +17,12 @@
 #' downstream functions. 
 #'
 #' @examples
+#' \dontrun{
 #' class(mdlvalr_list)
 #' # [1] "hybcap" "list"
 #' 
 #' mdlvalr_list <- get_stats(mdlvalr_list)
-#'
+#'}
 get_stats <- function(mdlvalr_list, pipeline = NULL) {
     UseMethod("get_stats")
 }

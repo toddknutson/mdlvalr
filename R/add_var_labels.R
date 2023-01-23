@@ -17,9 +17,9 @@
 #' downstream functions. 
 #'
 #' @examples
+#' \dontrun{
 #' class(mdlvalr_list)
 #' # [1] "hybcap" "list"
-#' \notrun{
 #' mdlvalr_list <- add_var_labels(
 #'     mdlvalr_list,
 #'     pipeline = "hybcap")
