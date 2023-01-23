@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mdlvalr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,7 +24,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/mdlvalr_getting_started.html">mdlvalr_getting_started</a>
+    <a class="dropdown-item" href="../articles/about.html">About the package</a>
+    <a class="dropdown-item" href="../articles/hybcap.html">Example: hybcap</a>
   </div>
 </li>
 <li class="nav-item">
@@ -57,22 +58,22 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_data</span><span class="op">(</span><span class="va">sample_sheet</span>, pipeline <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for hybcap</span></span>
-<span><span class="fu">get_data</span><span class="op">(</span><span class="va">sample_sheet</span>, pipeline <span class="op">=</span> <span class="st">"hybcap"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_data</span><span class="op">(</span><span class="va">sample_sheet</span>, pipeline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hybcap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>sample_sheet</dt>
 <dd><p>Name of the tibble or data.frame that contains sample
-info. The class of this object can be used to automatically determine which
-function methods will be used.</p></dd>
+info. One set of comparisons per row of table. There are five required
+column names: (1) <code>comparison_name</code> (e.g. "sample1_run1_vs_sample1_run2").
+(2, 3) <code>var_path_1</code> and <code>var_path_2</code> that provide complete paths to the
+variant files. (4, 5) <code>cov_path_1</code> and <code>cov_path_2</code> that provide complete
+paths to the coverage files.</p></dd>
 
 
 <dt>pipeline</dt>
-<dd><p>Standard name of the pipeline from which the data were derived.</p></dd>
+<dd><p>Standard name of the pipeline from which the data were derived</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -83,25 +84,12 @@ function methods will be used.</p></dd>
 The class of the retuned object is updated to include the name of the pipeline. This facilitates use of alternative methods in
 downstream functions.</p>
     </div>
-    <div class="section level2">
-    <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
-    
-
-<p>This function is a <strong>generic</strong>, which means that different
-implementations (methods) can be executed for different classes. The class
-of the first argument will determine which method is used. See the documentation of
-individual methods for extra arguments and differences in behaviour.</p>
-    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">sample_sheet</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'sample_sheet' not found</span>
-<span class="r-in"><span><span class="co"># [1] "hybcap" "tbl_df" "data.frame"</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">mdlvalr_list</span> <span class="op">&lt;-</span> <span class="fu">get_data</span><span class="op">(</span><span class="va">sample_sheet</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_data(sample_sheet):</span> object 'sample_sheet' not found</span>
-<span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">mdlvalr_list</span> <span class="op">&lt;-</span> <span class="fu">get_data</span><span class="op">(</span><span class="va">sample_sheet</span>, pipeline <span class="op">=</span> <span class="st">"hybcap"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -109,7 +97,7 @@ individual methods for extra arguments and differences in behaviour.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Christine O’Connor.</p>
+  <p></p><p>Developed by Todd Knutson, Christine O’Connor.</p>
 </div>
 
 <div class="pkgdown-footer-right">

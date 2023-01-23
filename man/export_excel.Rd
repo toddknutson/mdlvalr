@@ -37,9 +37,9 @@ individual methods for extra arguments and differences in behaviour.
 }
 
 \examples{
+\dontrun{
 class(mdlvalr_list)
 # [1] "hybcap" "list"
-\notrun{
 mdlvalr_list <- export_excel(
     mdlvalr_list,
     pipeline = "hybcap",

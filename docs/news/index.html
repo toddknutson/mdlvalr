@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mdlvalr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,7 +24,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/mdlvalr_getting_started.html">mdlvalr_getting_started</a>
+    <a class="dropdown-item" href="../articles/about.html">About the package</a>
+    <a class="dropdown-item" href="../articles/hybcap.html">Example: hybcap</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -51,6 +52,13 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="mdlvalr-040">mdlvalr 0.4.0<a class="anchor" aria-label="anchor" href="#mdlvalr-040"></a></h2>
+<ul><li>Removed <code>validate_samples()</code> function because it was too specific to a simple use-case. Instead, a standardized sample sheet is supplied to the <code><a href="../reference/get_data.html">get_data()</a></code> function to start the analysis. Creating the sample sheet can be done in a variety of ways and is out of scope right now.</li>
+<li>Updated documentation</li>
+<li>Changed the getting started article/vignette to and example for the <code>hybcap</code> pipeline specifically. In addition, the example files included with the package were streamlined. And the vignette can be run anywhere using the provided input files.</li>
+<li>Added a new article/vignette called “About” that describes the big picture for the package and it’s functions</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="mdlvalr-030">mdlvalr 0.3.0<a class="anchor" aria-label="anchor" href="#mdlvalr-030"></a></h2>
 <ul><li>First beta release</li>
 <li>All functions documented</li>
@@ -66,7 +74,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Christine O’Connor.</p>
+  <p></p><p>Developed by Todd Knutson, Christine O’Connor.</p>
 </div>
 
 <div class="pkgdown-footer-right">

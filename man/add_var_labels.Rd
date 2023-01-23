@@ -33,9 +33,9 @@ individual methods for extra arguments and differences in behaviour.
 }
 
 \examples{
+\dontrun{
 class(mdlvalr_list)
 # [1] "hybcap" "list"
-\notrun{
 mdlvalr_list <- add_var_labels(
     mdlvalr_list,
     pipeline = "hybcap")

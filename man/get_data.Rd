@@ -2,19 +2,19 @@
 % Please edit documentation in R/get_data.R
 \name{get_data}
 \alias{get_data}
-\alias{get_data.hybcap}
 \title{Read pipeline files into a list}
 \usage{
-get_data(sample_sheet, pipeline = NULL)
-
-\method{get_data}{hybcap}(sample_sheet, pipeline = "hybcap")
+get_data(sample_sheet, pipeline = c("hybcap"))
 }
 \arguments{
 \item{sample_sheet}{Name of the tibble or data.frame that contains sample
-info. The class of this object can be used to automatically determine which
-function methods will be used.}
+info. One set of comparisons per row of table. There are five required
+column names: (1) \code{comparison_name} (e.g. "sample1_run1_vs_sample1_run2").
+(2, 3) \code{var_path_1} and \code{var_path_2} that provide complete paths to the
+variant files. (4, 5) \code{cov_path_1} and \code{cov_path_2} that provide complete
+paths to the coverage files.}
 
-\item{pipeline}{Standard name of the pipeline from which the data were derived.}
+\item{pipeline}{Standard name of the pipeline from which the data were derived}
 }
 \value{
 Returns a standard \code{mdlvalr_list} object (i.e. a regular R list of lists) that contains tables as named list elements.
@@ -24,18 +24,8 @@ downstream functions.
 \description{
 Read pipeline files into a list
 }
-\section{Methods}{
-
-This function is a \strong{generic}, which means that different
-implementations (methods) can be executed for different classes. The class
-of the first argument will determine which method is used. See the documentation of
-individual methods for extra arguments and differences in behaviour.
-}
-
 \examples{
-class(sample_sheet)
-# [1] "hybcap" "tbl_df" "data.frame"
-
-mdlvalr_list <- get_data(sample_sheet)
-
+\dontrun{
+mdlvalr_list <- get_data(sample_sheet, pipeline = "hybcap")
+}
 }
