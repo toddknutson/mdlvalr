@@ -18,9 +18,9 @@
 #' downstream functions. 
 #'
 #' @examples
+#' \dontrun{
 #' class(mdlvalr_list)
 #' # [1] "hybcap" "list"
-#' \notrun{
 #' mdlvalr_list <- export_excel(
 #'     mdlvalr_list,
 #'     pipeline = "hybcap",
@@ -61,8 +61,8 @@ export_excel.hybcap <- function(
               bind_rows()
 
         out_list <- c(list(summary = summary_tbl), flagged, labeled, filtered)
-        wb <- write.xlsx(out_list, file = glue("{filename_prefix}{curr_comparison}.xlsx"), overwrite = TRUE)
+        wb <- openxlsx::write.xlsx(out_list, file = glue("{filename_prefix}{curr_comparison}.xlsx"), overwrite = TRUE)
     }
-    wb <- write.xlsx(list(all_samples = mdlvalr_list$summary), file = glue("{filename_prefix}all.xlsx"), overwrite = TRUE)
+    wb <- openxlsx::write.xlsx(list(all_samples = mdlvalr_list$summary), file = glue("{filename_prefix}all.xlsx"), overwrite = TRUE)
 }
 
