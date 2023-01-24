@@ -21,8 +21,8 @@
 #' mdlvalr_list <- get_data(sample_sheet, pipeline = "hybcap")
 #'}
 get_data <- function(sample_sheet, pipeline) {
-    if (!pipeline %in% c("hybcap")) {
-        stop("ERROR: pipeline arg supplied to `get_data()` must be only one of: c('hybcap')")
+    if (!pipeline %in% c("hybcap", "germline")) {
+        stop("ERROR: pipeline arg supplied to `get_data()` must be only one of: c('hybcap', 'germline')")
     }
 
     comparisons <- list()
@@ -52,6 +52,42 @@ get_data <- function(sample_sheet, pipeline) {
 
             if (file.exists(sample_sheet$cov_path_2[i])) {
                 cov_2 <- openxlsx::read.xlsx(xlsxFile = sample_sheet$cov_path_2[i], sheet = 2) %>%
+                    as_tibble()
+            } else {
+                stop(glue("ERROR: cannot find cov_path_2 file: {sample_sheet$cov_path_2[i]}"))
+            }
+
+            comparisons[[i]] <- list(input_data = list(var_1 = var_1, var_2 = var_2, cov_1 = cov_1, cov_2 = cov_2))
+        }
+    } else if (pipeline == "germline") {
+        for (i in seq_len(nrow(sample_sheet))) {
+            if (file.exists(sample_sheet$var_path_1[i])) {
+                var_1 <- readr::read_tsv(sample_sheet$var_path_1[i], comment = "#",
+                    col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "SAMPLE")) %>%
+                    as_tibble()
+            } else {
+                stop(glue("ERROR: cannot find var_path_1 file: {sample_sheet$var_path_1[i]}"))
+            }
+
+            if (file.exists(sample_sheet$var_path_2[i])) {
+                var_2 <- readr::read_tsv(sample_sheet$var_path_2[i], comment = "#",
+                    col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "SAMPLE")) %>%
+                    as_tibble()
+            } else {
+                stop(glue("ERROR: cannot find var_path_2 file: {sample_sheet$var_path_2[i]}"))
+            }
+
+            if (file.exists(sample_sheet$cov_path_1[i])) {
+                cov_1 <- readr::read_tsv(sample_sheet$cov_path_1[i], comment = "#",
+                    col_names = c("chr", "start", "end", "bases_15x", "bases_20x", "exons_15x", "exons_20x", "exon")) %>%
+                    as_tibble()
+            } else {
+                stop(glue("ERROR: cannot find cov_path_1 file: {sample_sheet$cov_path_1[i]}"))
+            }
+
+            if (file.exists(sample_sheet$cov_path_2[i])) {
+                cov_2 <- readr::read_tsv(sample_sheet$cov_path_2[i], comment = "#",
+                    col_names = c("chr", "start", "end", "bases_15x", "bases_20x", "exons_15x", "exons_20x", "exon")) %>%
                     as_tibble()
             } else {
                 stop(glue("ERROR: cannot find cov_path_2 file: {sample_sheet$cov_path_2[i]}"))
