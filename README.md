@@ -35,3 +35,10 @@ BiocManager::install("plyranges")
 # Install mdlvalr
 remotes::install_github("msi/mdlvalr", host = "github.umn.edu/api/v3", auth_token = "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")
 ```
+
+## How was this built?
+
+See a companion repo that contains various scripts for building,
+updating, and installing this `mdlvalr` R package:
+
+<https://github.umn.edu/msi/mdlvalr_build>
