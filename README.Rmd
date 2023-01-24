@@ -34,9 +34,15 @@ BiocManager::install("plyranges")
 remotes::install_github("msi/mdlvalr", host = "github.umn.edu/api/v3", auth_token = "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")
 ```
 
-## Example
+
+## About the package
+
+The design rationale for the package can be found in the [About](./docs/articles/about.html) article/vignette.
 
 
+## Examples
+
+Follow an example analysis in the [`hybcap`](./docs/articles/hybcap.html) pipeline article/vignette.
 
 ## Notes
 

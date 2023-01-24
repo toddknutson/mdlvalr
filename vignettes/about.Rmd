@@ -32,9 +32,9 @@ Each of the various pipelines have slightly different output files (some return 
 
 # A potential solution
 
-In once way, we could build multiple different concordance scripts that each handle specific pipelines. Alternatively, we could build a basic framework of concordance analysis that can be adjusted for each of the pipelines, but try to standardize each of the steps. 
+In one way, we could build multiple different concordance scripts that each handle specific pipelines. Alternatively, we could build a basic framework of concordance analysis that can be adjusted for each of the pipelines, but try to standardize each of the main steps. 
 
-For example, the basic approach of `mdlvalr` is to exploit the R programming language feature, called function "Methods". We can build one function (e.g. `compare_vars()`) that will "compare variant tables", but create different methods that correspond to the pipeline of interest. This idea is exploited widely in R. For example, when you execute `print(object)` in R, it looks to see what `class` the object is, and returns a class-specific print out. This is how R knows how to print a linear model fit vs a data frame (`print(fit)` vs `print(df)`) to the screen using the same `print()` function. Thus, `print()` is a generic function in R that employs different methods. To list all the methods available to the generic print function, you can run: `methods(print)`. And if you load certain libraries (e.g. `tidyverse`), many more methods will be avaialble. 
+For example, the basic approach of `mdlvalr` is to exploit an R programming language feature, called function "Methods". We can build one function (e.g. `compare_vars()`) that will "compare variant tables", but create different methods that correspond to the pipeline of interest. This idea is exploited widely in R. For example, when you execute `print(object)` in R, it looks to see what `class` the object is, and returns a class-specific print out. This is how R knows how to print a linear model fit vs a data frame (`print(fit)` vs `print(df)`) to the screen using the same `print()` function. Thus, `print()` is a generic function in R that employs different methods. To list all the methods available to the generic print function, you can run: `methods(print)`. And if you load certain libraries (e.g. `tidyverse`), many more methods will be avaialble. 
 
 For `mdlvalr` we can design the basic concordance steps as generic functions, but write pipeline specific methods, when needed. For example, in R code, the generic function name would be `step1` and the pipeline specific method name would be `step1.pipeline1`. Using this approach, if `class(object)` includes the class name "pipeline1", then we can run `step1(object)` and the step1 function will automatically apply the pipeline1 method. 
 
@@ -45,28 +45,28 @@ Alternatively, we could simply build pipeline specific functions (e.g. `step1_pi
 For each step below (except `get_data()`), a generic function was created. The generic function will point to a pipeline-specific "method" to be used (based on the class of the object). 
 
 
-1. get_data()
+1. `get_data()`
     * This is not an R generic function
     * The purpose of this function is to take a sample sheet of comparisons as input and capture (read-in) all the necessary data to complete the analysis.
     * The `pipeline` needs to be specified for this function.
     * A standard R list object is output from this function, but the list also has a new R class added to its attributes: the name of the pipeline (e.g. `hybcap`).
-1. add_flags()
+1. `add_flags()`
     * The purpose of this function is to add new columns to the variant and coverage tables.
     * A coding sequence (CDS) table is used to determine whether a variant in the sample table falls within an exon or not. This results in a new column (`within_refseq_cds`) being added to the table with "yes" or "no" values.
     * Frequently, the clinicians only mostly care about concordance of vars or coverage regions based on some thresholds. These thresholds can be ad hoc. Therefore, we can specify pipeline-specific R filtering logic to the `var_pass_fail_logic` or `cov_pass_fail_logic` parameters. If the variant or coverage row passes the logic test (i.e. `TRUE`), then a new column is added to the table indicating "pass" or "fail".
     * No variants or coverage rows are removed from any tables.
-1. compare_vars()
+1. `compare_vars()`
     * The purpose of this function is to compare variant or coverage tables from each comparison group.
-    * The function runs `dylyr::full_join` (among other joins) by a set of common columns (e.g. CHROM, REF, ALT, etc.). All possible splits of the data are captured into sub-tables and saved to the R list object.
-1. add_var_labels()
+    * The function runs `dylyr::full_join()` (among other joins) by a set of common columns (e.g. CHROM, REF, ALT, etc.). All possible splits of the data are captured into sub-tables and saved to the R list object.
+1. `add_var_labels()`
     * The purpose of this function is to add new columns to the "compared" data tables.
     * Using the pass/fail labels (from `add_flags()`) and along with their group membership (e.g. `vars_in_s1_not_in_s2`), we can further label variants as passing or failing in one or both samples being compared.
     * No variants are removed from any tables
-1. filter_data()
+1. `filter_data()`
     * Finally, after comparing tables and labeling vars/coverage rows, we can use these labels to actually filter the tables.
     * Tables can be filtered down into smaller "pass-only", or "pass in sample1, fail in sample2" type tables. 
     * These filtered tables are added to the input list object.
-1. get_stats()
+1. `get_stats()`
     * This function simply reports the size of the all the various tables in the list object. 
     * For example: the total number of rows in the var_1 table, or the number of rows in the `vars_in_common_s1pass_s2pass` table.
 1. `export_excel()`

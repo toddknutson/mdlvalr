@@ -1,7 +1,7 @@
 Type: Package
 Package: mdlvalr
 Title: Validation and Concordance Analysis for MDL Pipelines
-Version: 0.3.1
+Version: 0.4.0
 Authors@R: c(
     person("Todd", "Knutson", , "knut0297@umn.edu", role = c("aut", "cre")),
     person("Christine", "O'Connor", , "oconnorc@umn.edu", role = c("aut"))
