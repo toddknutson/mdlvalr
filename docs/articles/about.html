@@ -49,6 +49,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/about.html">About the package</a>
+    <a class="dropdown-item" href="../articles/germline.html">Example: germline</a>
     <a class="dropdown-item" href="../articles/hybcap.html">Example: hybcap</a>
   </div>
 </li>
@@ -169,6 +170,193 @@
 </ul>
 </li>
 </ol>
+</div>
+<div class="section level2">
+<h2 id="note-about-r-generics">Note about R generics<a class="anchor" aria-label="anchor" href="#note-about-r-generics"></a>
+</h2>
+<p>Accessing the docs for a function in R is as easy, using <code>?function_name</code>. This will work great for <code>?get_data()</code> because it is a regular function.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pages.github.umn.edu/msi/mdlvalr" class="external-link">mdlvalr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">?</span><span class="fu"><a href="../reference/get_data.html">get_data</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">get_data</span></span>
+<span><span class="co">#&gt; function (sample_sheet, pipeline) </span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;     if (!pipeline %in% c("hybcap", "germline")) {</span></span>
+<span><span class="co">#&gt;         stop("ERROR: pipeline arg supplied to `get_data()` must be only one of: c('hybcap', 'germline')")</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     comparisons &lt;- list()</span></span>
+<span><span class="co">#&gt;     if (pipeline == "hybcap") {</span></span>
+<span><span class="co">#&gt;         for (i in seq_len(nrow(sample_sheet))) {</span></span>
+<span><span class="co">#&gt;             if (file.exists(sample_sheet$var_path_1[i])) {</span></span>
+<span><span class="co">#&gt;                 var_1 &lt;- openxlsx::read.xlsx(xlsxFile = sample_sheet$var_path_1[i]) %&gt;% </span></span>
+<span><span class="co">#&gt;                   as_tibble()</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             else {</span></span>
+<span><span class="co">#&gt;                 stop(glue("ERROR: cannot find var_path_1 file: {sample_sheet$var_path_1[i]}"))</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             if (file.exists(sample_sheet$var_path_2[i])) {</span></span>
+<span><span class="co">#&gt;                 var_2 &lt;- openxlsx::read.xlsx(xlsxFile = sample_sheet$var_path_2[i]) %&gt;% </span></span>
+<span><span class="co">#&gt;                   as_tibble()</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             else {</span></span>
+<span><span class="co">#&gt;                 stop(glue("ERROR: cannot find var_path_2 file: {sample_sheet$var_path_2[i]}"))</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             if (file.exists(sample_sheet$cov_path_1[i])) {</span></span>
+<span><span class="co">#&gt;                 cov_1 &lt;- openxlsx::read.xlsx(xlsxFile = sample_sheet$cov_path_1[i], </span></span>
+<span><span class="co">#&gt;                   sheet = 2) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             else {</span></span>
+<span><span class="co">#&gt;                 stop(glue("ERROR: cannot find cov_path_1 file: {sample_sheet$cov_path_1[i]}"))</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             if (file.exists(sample_sheet$cov_path_2[i])) {</span></span>
+<span><span class="co">#&gt;                 cov_2 &lt;- openxlsx::read.xlsx(xlsxFile = sample_sheet$cov_path_2[i], </span></span>
+<span><span class="co">#&gt;                   sheet = 2) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             else {</span></span>
+<span><span class="co">#&gt;                 stop(glue("ERROR: cannot find cov_path_2 file: {sample_sheet$cov_path_2[i]}"))</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             comparisons[[i]] &lt;- list(input_data = list(var_1 = var_1, </span></span>
+<span><span class="co">#&gt;                 var_2 = var_2, cov_1 = cov_1, cov_2 = cov_2))</span></span>
+<span><span class="co">#&gt;         }</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     else if (pipeline == "germline") {</span></span>
+<span><span class="co">#&gt;         for (i in seq_len(nrow(sample_sheet))) {</span></span>
+<span><span class="co">#&gt;             if (file.exists(sample_sheet$var_path_1[i])) {</span></span>
+<span><span class="co">#&gt;                 var_1 &lt;- readr::read_tsv(sample_sheet$var_path_1[i], </span></span>
+<span><span class="co">#&gt;                   comment = "#", col_names = c("CHROM", "POS", </span></span>
+<span><span class="co">#&gt;                     "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", </span></span>
+<span><span class="co">#&gt;                     "FORMAT", "SAMPLE")) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             else {</span></span>
+<span><span class="co">#&gt;                 stop(glue("ERROR: cannot find var_path_1 file: {sample_sheet$var_path_1[i]}"))</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             if (file.exists(sample_sheet$var_path_2[i])) {</span></span>
+<span><span class="co">#&gt;                 var_2 &lt;- readr::read_tsv(sample_sheet$var_path_2[i], </span></span>
+<span><span class="co">#&gt;                   comment = "#", col_names = c("CHROM", "POS", </span></span>
+<span><span class="co">#&gt;                     "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", </span></span>
+<span><span class="co">#&gt;                     "FORMAT", "SAMPLE")) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             else {</span></span>
+<span><span class="co">#&gt;                 stop(glue("ERROR: cannot find var_path_2 file: {sample_sheet$var_path_2[i]}"))</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             if (file.exists(sample_sheet$cov_path_1[i])) {</span></span>
+<span><span class="co">#&gt;                 cov_1 &lt;- readr::read_tsv(sample_sheet$cov_path_1[i], </span></span>
+<span><span class="co">#&gt;                   comment = "#", col_names = c("chr", "start", </span></span>
+<span><span class="co">#&gt;                     "end", "bases_15x", "bases_20x", "exons_15x", </span></span>
+<span><span class="co">#&gt;                     "exons_20x", "exon")) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             else {</span></span>
+<span><span class="co">#&gt;                 stop(glue("ERROR: cannot find cov_path_1 file: {sample_sheet$cov_path_1[i]}"))</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             if (file.exists(sample_sheet$cov_path_2[i])) {</span></span>
+<span><span class="co">#&gt;                 cov_2 &lt;- readr::read_tsv(sample_sheet$cov_path_2[i], </span></span>
+<span><span class="co">#&gt;                   comment = "#", col_names = c("chr", "start", </span></span>
+<span><span class="co">#&gt;                     "end", "bases_15x", "bases_20x", "exons_15x", </span></span>
+<span><span class="co">#&gt;                     "exons_20x", "exon")) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             else {</span></span>
+<span><span class="co">#&gt;                 stop(glue("ERROR: cannot find cov_path_2 file: {sample_sheet$cov_path_2[i]}"))</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;             comparisons[[i]] &lt;- list(input_data = list(var_1 = var_1, </span></span>
+<span><span class="co">#&gt;                 var_2 = var_2, cov_1 = cov_1, cov_2 = cov_2))</span></span>
+<span><span class="co">#&gt;         }</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     else {</span></span>
+<span><span class="co">#&gt;         stop(glue("ERROR: There is no method for get_data for pipeline: {pipeline}"))</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     names(comparisons) &lt;- sample_sheet$comparison_name</span></span>
+<span><span class="co">#&gt;     mdlvalr_list &lt;- list(pipeline = pipeline, sample_sheet = sample_sheet, </span></span>
+<span><span class="co">#&gt;         summary = NULL, comparisons = comparisons)</span></span>
+<span><span class="co">#&gt;     class(mdlvalr_list) &lt;- c(pipeline, class(mdlvalr_list))</span></span>
+<span><span class="co">#&gt;     return(mdlvalr_list)</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x4a225f8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: namespace:mdlvalr&gt;</span></span></code></pre></div>
+<p>However, doing this with generic functions leaves you wondering more! Instead, for generics, try the following to find the code behind R generic functions.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">?</span><span class="fu"><a href="../reference/compare_vars.html">compare_vars</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">compare_vars</span></span>
+<span><span class="co">#&gt; function (mdlvalr_list, pipeline = NULL, match_by_colnames = NULL, </span></span>
+<span><span class="co">#&gt;     suffix_names = c(".sample1", ".sample2")) </span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;     UseMethod("compare_vars")</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x70ed278&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: namespace:mdlvalr&gt;</span></span>
+<span></span>
+<span><span class="co"># List the available methods for this generic function</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/methods.html" class="external-link">methods</a></span><span class="op">(</span><span class="va">compare_vars</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] compare_vars.hybcap*</span></span>
+<span><span class="co">#&gt; see '?methods' for accessing help and source code</span></span>
+<span></span>
+<span><span class="co"># Show the source code for the method: "hybcap"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/getAnywhere.html" class="external-link">getAnywhere</a></span><span class="op">(</span><span class="va">compare_vars.hybcap</span><span class="op">)</span></span>
+<span><span class="co">#&gt; A single object matching 'compare_vars.hybcap' was found</span></span>
+<span><span class="co">#&gt; It was found in the following places</span></span>
+<span><span class="co">#&gt;   registered S3 method for compare_vars from namespace mdlvalr</span></span>
+<span><span class="co">#&gt;   namespace:mdlvalr</span></span>
+<span><span class="co">#&gt; with value</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; function (mdlvalr_list, pipeline = "hybcap", match_by_colnames = c("CHROM", </span></span>
+<span><span class="co">#&gt;     "POS", "REF", "ALT", "GENE", "EXON"), suffix_names = c(".sample1", </span></span>
+<span><span class="co">#&gt;     ".sample2")) </span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;     for (i in seq_along(names(mdlvalr_list$comparisons))) {</span></span>
+<span><span class="co">#&gt;         var_1 &lt;- mdlvalr_list$comparisons[[i]]$flagged_data$var_1</span></span>
+<span><span class="co">#&gt;         var_2 &lt;- mdlvalr_list$comparisons[[i]]$flagged_data$var_2</span></span>
+<span><span class="co">#&gt;         full_join &lt;- dplyr::full_join(var_1, var_2, by = match_by_colnames, </span></span>
+<span><span class="co">#&gt;             suffix = suffix_names)</span></span>
+<span><span class="co">#&gt;         vars_in_common &lt;- dplyr::inner_join(var_1, var_2, by = match_by_colnames, </span></span>
+<span><span class="co">#&gt;             suffix = suffix_names)</span></span>
+<span><span class="co">#&gt;         vars_in_common_from_s1 &lt;- dplyr::semi_join(var_1, var_2, </span></span>
+<span><span class="co">#&gt;             by = match_by_colnames)</span></span>
+<span><span class="co">#&gt;         vars_in_common_from_s2 &lt;- dplyr::semi_join(var_2, var_1, </span></span>
+<span><span class="co">#&gt;             by = match_by_colnames)</span></span>
+<span><span class="co">#&gt;         vars_in_s1_not_in_s2 &lt;- dplyr::anti_join(var_1, var_2, </span></span>
+<span><span class="co">#&gt;             by = match_by_colnames)</span></span>
+<span><span class="co">#&gt;         vars_in_s2_not_in_s1 &lt;- dplyr::anti_join(var_2, var_1, </span></span>
+<span><span class="co">#&gt;             by = match_by_colnames)</span></span>
+<span><span class="co">#&gt;         mdlvalr_list$comparisons[[i]]$compared_data &lt;- list(full_join = full_join, </span></span>
+<span><span class="co">#&gt;             vars_in_common = vars_in_common, vars_in_common_from_s1 = vars_in_common_from_s1, </span></span>
+<span><span class="co">#&gt;             vars_in_common_from_s2 = vars_in_common_from_s2, </span></span>
+<span><span class="co">#&gt;             vars_in_s1_not_in_s2 = vars_in_s1_not_in_s2, vars_in_s2_not_in_s1 = vars_in_s2_not_in_s1)</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     class(mdlvalr_list) &lt;- class(mdlvalr_list)</span></span>
+<span><span class="co">#&gt;     return(mdlvalr_list)</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x5508b90&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: namespace:mdlvalr&gt;</span></span>
+<span><span class="fu">mdlvalr</span><span class="fu">:::</span><span class="va"><a href="../reference/compare_vars.html">compare_vars.hybcap</a></span></span>
+<span><span class="co">#&gt; function (mdlvalr_list, pipeline = "hybcap", match_by_colnames = c("CHROM", </span></span>
+<span><span class="co">#&gt;     "POS", "REF", "ALT", "GENE", "EXON"), suffix_names = c(".sample1", </span></span>
+<span><span class="co">#&gt;     ".sample2")) </span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;     for (i in seq_along(names(mdlvalr_list$comparisons))) {</span></span>
+<span><span class="co">#&gt;         var_1 &lt;- mdlvalr_list$comparisons[[i]]$flagged_data$var_1</span></span>
+<span><span class="co">#&gt;         var_2 &lt;- mdlvalr_list$comparisons[[i]]$flagged_data$var_2</span></span>
+<span><span class="co">#&gt;         full_join &lt;- dplyr::full_join(var_1, var_2, by = match_by_colnames, </span></span>
+<span><span class="co">#&gt;             suffix = suffix_names)</span></span>
+<span><span class="co">#&gt;         vars_in_common &lt;- dplyr::inner_join(var_1, var_2, by = match_by_colnames, </span></span>
+<span><span class="co">#&gt;             suffix = suffix_names)</span></span>
+<span><span class="co">#&gt;         vars_in_common_from_s1 &lt;- dplyr::semi_join(var_1, var_2, </span></span>
+<span><span class="co">#&gt;             by = match_by_colnames)</span></span>
+<span><span class="co">#&gt;         vars_in_common_from_s2 &lt;- dplyr::semi_join(var_2, var_1, </span></span>
+<span><span class="co">#&gt;             by = match_by_colnames)</span></span>
+<span><span class="co">#&gt;         vars_in_s1_not_in_s2 &lt;- dplyr::anti_join(var_1, var_2, </span></span>
+<span><span class="co">#&gt;             by = match_by_colnames)</span></span>
+<span><span class="co">#&gt;         vars_in_s2_not_in_s1 &lt;- dplyr::anti_join(var_2, var_1, </span></span>
+<span><span class="co">#&gt;             by = match_by_colnames)</span></span>
+<span><span class="co">#&gt;         mdlvalr_list$comparisons[[i]]$compared_data &lt;- list(full_join = full_join, </span></span>
+<span><span class="co">#&gt;             vars_in_common = vars_in_common, vars_in_common_from_s1 = vars_in_common_from_s1, </span></span>
+<span><span class="co">#&gt;             vars_in_common_from_s2 = vars_in_common_from_s2, </span></span>
+<span><span class="co">#&gt;             vars_in_s1_not_in_s2 = vars_in_s1_not_in_s2, vars_in_s2_not_in_s1 = vars_in_s2_not_in_s1)</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     class(mdlvalr_list) &lt;- class(mdlvalr_list)</span></span>
+<span><span class="co">#&gt;     return(mdlvalr_list)</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x5508b90&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: namespace:mdlvalr&gt;</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

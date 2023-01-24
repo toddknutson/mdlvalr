@@ -49,6 +49,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/about.html">About the package</a>
+    <a class="dropdown-item" href="articles/germline.html">Example: germline</a>
     <a class="dropdown-item" href="articles/hybcap.html">Example: hybcap</a>
   </div>
 </li>
@@ -79,12 +80,12 @@
 <img src="logo.png" class="logo" alt=""><h1 id="mdlvalr-">mdlvalr <a class="anchor" aria-label="anchor" href="#mdlvalr-"></a>
 </h1>
 </div>
-<p>This R package can be used to facilitate validation of MDL pipelines with R.</p>
+<p>This R package can be used to facilitate validation of MDL pipelines with R. To learn more, please explore the package <a href="https://pages.github.umn.edu/msi/mdlvalr" class="external-link">website</a>. There, you will find a list of <a href="https://pages.github.umn.edu/msi/mdlvalr/news/index.html" class="external-link">functions</a>, <a href="https://pages.github.umn.edu/msi/mdlvalr/articles/index.html" class="external-link">articles/vignettes</a>, and a <a href="https://pages.github.umn.edu/msi/mdlvalr/news/index.html" class="external-link">changelog</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Installing the package from a GitHub Enterprise (organization) account requires a few extra arguments, including an <a href="https://docs.github.com/en/enterprise-server@3.2/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" class="external-link">authorization token</a>. The authorization token is set to expire on 2023-09-30. Please let me know if it is expired or you have any other issues installing from GitHub.</p>
-<p>The package also depends on the <code>plyranges</code> R package from Bioconductor. So make sure that is installed first.</p>
+<p>The package also depends on the <code>plyranges</code> R package from Bioconductor. So make sure that is installed first. Other dependencies are hosted on CRAN and will be installed automatically if necessary.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If you need to install plyranges</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
@@ -94,30 +95,6 @@
 <span></span>
 <span><span class="co"># Install mdlvalr</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"msi/mdlvalr"</span>, host <span class="op">=</span> <span class="st">"github.umn.edu/api/v3"</span>, auth_token <span class="op">=</span> <span class="st">"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"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="about-the-package">About the package<a class="anchor" aria-label="anchor" href="#about-the-package"></a>
-</h2>
-<p>The design rationale for the package can be found in the <a href="./articles/about.html">About</a> article/vignette.</p>
-</div>
-<div class="section level2">
-<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
-</h2>
-<p>Follow an example analysis in the <a href="./articles/hybcap.html"><code>hybcap</code></a> pipeline article/vignette.</p>
-</div>
-<div class="section level2">
-<h2 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
-</h2>
-<p>This package uses generic functions with pipeline specific methods. To explore the source code within R, try the following examples.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pages.github.umn.edu/msi/mdlvalr" class="external-link">mdlvalr</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># List the available methods for this generic function</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/methods.html" class="external-link">methods</a></span><span class="op">(</span><span class="va">compare_vars</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Show the source code for the method: "hybcap"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/getAnywhere.html" class="external-link">getAnywhere</a></span><span class="op">(</span><span class="va">compare_vars.hybcap</span><span class="op">)</span></span>
-<span><span class="fu">mdlvalr</span><span class="fu">:::</span><span class="va"><a href="reference/compare_vars.html">compare_vars.hybcap</a></span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
