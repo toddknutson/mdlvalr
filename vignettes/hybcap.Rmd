@@ -41,9 +41,6 @@ Load example data objects
 
 ```{r}
 # Assign package lazy data object to a env variable
-# mdlvalr_list <- hybcap_mdlvalr_list
-
-# Assign package lazy data object to a env variable
 cds_table <- refseq_gff_unnest_with_chrom_cds
 ```
 
@@ -64,7 +61,7 @@ cov_150ug <- Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-150_*_coverage_summary.x
 ```
 
 
-## Create a sample sheet of comparisons
+Create a sample sheet of comparisons
 
 
 ```{r}
@@ -87,7 +84,7 @@ class(sample_sheet) <- c("hybcap", class(sample_sheet))
 
 
 
-Run concordance
+## Run concordance
 
 ```{r}
 mdlvalr_list <- get_data(sample_sheet)
@@ -108,7 +105,7 @@ mdlvalr_list <- get_stats(mdlvalr_list)
 
 
 
-Create output files
+## Create output files
 
 
 ```{r}
@@ -119,7 +116,9 @@ export_excel(mdlvalr_list, filename_prefix = "vaf_0.05_")
 
 
 
-Explore the `mdlvalr_list` object
+## Explore the `mdlvalr_list` object
+
+View the list object
 
 ```{r}
 # Show the list-of-lists object

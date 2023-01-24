@@ -106,9 +106,6 @@
 <p>Load example data objects</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assign package lazy data object to a env variable</span></span>
-<span><span class="co"># mdlvalr_list &lt;- hybcap_mdlvalr_list</span></span>
-<span></span>
-<span><span class="co"># Assign package lazy data object to a env variable</span></span>
 <span><span class="va">cds_table</span> <span class="op">&lt;-</span> <span class="va">refseq_gff_unnest_with_chrom_cds</span></span></code></pre></div>
 <p>Get the path to package extra data dir.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -119,10 +116,7 @@
 <span><span class="va">var_150ug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.glob.html" class="external-link">Sys.glob</a></span><span class="op">(</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{extdata_dir}/hybcap_v1.0/*-150_*_filtered_integrated_variant_output_summary.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cov_100ug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.glob.html" class="external-link">Sys.glob</a></span><span class="op">(</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{extdata_dir}/hybcap_v1.0/*-100_*_coverage_summary.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cov_150ug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.glob.html" class="external-link">Sys.glob</a></span><span class="op">(</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{extdata_dir}/hybcap_v1.0/*-150_*_coverage_summary.xlsx"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="create-a-sample-sheet-of-comparisons">Create a sample sheet of comparisons<a class="anchor" aria-label="anchor" href="#create-a-sample-sheet-of-comparisons"></a>
-</h2>
+<p>Create a sample sheet of comparisons</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sample_sheet</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    pipeline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"hybcap"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
@@ -136,7 +130,10 @@
 <span></span>
 <span><span class="co"># Add class to object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">sample_sheet</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hybcap"</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">sample_sheet</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Run concordance</p>
+</div>
+<div class="section level2">
+<h2 id="run-concordance">Run concordance<a class="anchor" aria-label="anchor" href="#run-concordance"></a>
+</h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mdlvalr_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_data.html">get_data</a></span><span class="op">(</span><span class="va">sample_sheet</span><span class="op">)</span></span>
 <span></span>
@@ -151,10 +148,17 @@
 <span><span class="va">mdlvalr_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_var_labels.html">add_var_labels</a></span><span class="op">(</span><span class="va">mdlvalr_list</span><span class="op">)</span></span>
 <span><span class="va">mdlvalr_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_data.html">filter_data</a></span><span class="op">(</span><span class="va">mdlvalr_list</span><span class="op">)</span></span>
 <span><span class="va">mdlvalr_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_stats.html">get_stats</a></span><span class="op">(</span><span class="va">mdlvalr_list</span><span class="op">)</span></span></code></pre></div>
-<p>Create output files</p>
+</div>
+<div class="section level2">
+<h2 id="create-output-files">Create output files<a class="anchor" aria-label="anchor" href="#create-output-files"></a>
+</h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/export_excel.html">export_excel</a></span><span class="op">(</span><span class="va">mdlvalr_list</span>, filename_prefix <span class="op">=</span> <span class="st">"vaf_0.05_"</span><span class="op">)</span></span></code></pre></div>
-<p>Explore the <code>mdlvalr_list</code> object</p>
+</div>
+<div class="section level2">
+<h2 id="explore-the-mdlvalr_list-object">Explore the <code>mdlvalr_list</code> object<a class="anchor" aria-label="anchor" href="#explore-the-mdlvalr_list-object"></a>
+</h2>
+<p>View the list object</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show the list-of-lists object</span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">mdlvalr_list</span><span class="op">)</span></span>
@@ -162,10 +166,10 @@
 <span><span class="co">#&gt;  $ pipeline    : chr "hybcap"</span></span>
 <span><span class="co">#&gt;  $ sample_sheet: hybcap [4 × 8] (S3: hybcap/tbl_df/tbl/data.frame)</span></span>
 <span><span class="co">#&gt;   ..$ pipeline         : chr [1:4] "hybcap" "hybcap" "hybcap" "hybcap"</span></span>
-<span><span class="co">#&gt;   ..$ var_path_1       : chr [1:4] "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01011-100_2022_0121_1317_filtered_int"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01012-100_2022_0121_1326_filtered_int"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01013-100_2022_0121_1305_filtered_int"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01014-100_2022_0121_1314_filtered_int"| __truncated__</span></span>
-<span><span class="co">#&gt;   ..$ var_path_2       : chr [1:4] "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01011-150_2022_0121_1319_filtered_int"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01012-150_2022_0121_1324_filtered_int"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01013-150_2022_0121_1309_filtered_int"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01014-150_2022_0121_1316_filtered_int"| __truncated__</span></span>
-<span><span class="co">#&gt;   ..$ cov_path_1       : chr [1:4] "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01011-100_2022_0121_1317_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01012-100_2022_0121_1326_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01013-100_2022_0121_1305_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01014-100_2022_0121_1314_coverage_summary.xlsx"</span></span>
-<span><span class="co">#&gt;   ..$ cov_path_2       : chr [1:4] "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01011-150_2022_0121_1319_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01012-150_2022_0121_1324_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01013-150_2022_0121_1309_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa010a6adae/mdlvalr/extdata/hybcap_v1.0/01-01014-150_2022_0121_1316_coverage_summary.xlsx"</span></span>
+<span><span class="co">#&gt;   ..$ var_path_1       : chr [1:4] "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01011-100_2022_0121_1317_filtered_inte"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01012-100_2022_0121_1326_filtered_inte"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01013-100_2022_0121_1305_filtered_inte"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01014-100_2022_0121_1314_filtered_inte"| __truncated__</span></span>
+<span><span class="co">#&gt;   ..$ var_path_2       : chr [1:4] "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01011-150_2022_0121_1319_filtered_inte"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01012-150_2022_0121_1324_filtered_inte"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01013-150_2022_0121_1309_filtered_inte"| __truncated__ "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01014-150_2022_0121_1316_filtered_inte"| __truncated__</span></span>
+<span><span class="co">#&gt;   ..$ cov_path_1       : chr [1:4] "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01011-100_2022_0121_1317_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01012-100_2022_0121_1326_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01013-100_2022_0121_1305_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01014-100_2022_0121_1314_coverage_summary.xlsx"</span></span>
+<span><span class="co">#&gt;   ..$ cov_path_2       : chr [1:4] "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01011-150_2022_0121_1319_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01012-150_2022_0121_1324_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01013-150_2022_0121_1309_coverage_summary.xlsx" "/tmp/RtmpEqYD6F/temp_libpath3ebaa06f6eca7/mdlvalr/extdata/hybcap_v1.0/01-01014-150_2022_0121_1316_coverage_summary.xlsx"</span></span>
 <span><span class="co">#&gt;   ..$ comparison_name_1: chr [1:4] "01-01011-100" "01-01012-100" "01-01013-100" "01-01014-100"</span></span>
 <span><span class="co">#&gt;   ..$ comparison_name_2: chr [1:4] "01-01011-150" "01-01012-150" "01-01013-150" "01-01014-150"</span></span>
 <span><span class="co">#&gt;   ..$ comparison_name  : 'glue' chr [1:4] "01-01011-100_vs_01-01011-150" "01-01012-100_vs_01-01012-150" "01-01013-100_vs_01-01013-150" "01-01014-100_vs_01-01014-150"</span></span>
