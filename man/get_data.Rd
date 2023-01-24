@@ -4,7 +4,7 @@
 \alias{get_data}
 \title{Read pipeline files into a list}
 \usage{
-get_data(sample_sheet, pipeline = c("hybcap"))
+get_data(sample_sheet, pipeline)
 }
 \arguments{
 \item{sample_sheet}{Name of the tibble or data.frame that contains sample
