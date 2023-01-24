@@ -224,36 +224,40 @@
 <span><span class="co">#&gt;         for (i in seq_len(nrow(sample_sheet))) {</span></span>
 <span><span class="co">#&gt;             if (file.exists(sample_sheet$var_path_1[i])) {</span></span>
 <span><span class="co">#&gt;                 var_1 &lt;- readr::read_tsv(sample_sheet$var_path_1[i], </span></span>
-<span><span class="co">#&gt;                   comment = "#", col_names = c("CHROM", "POS", </span></span>
-<span><span class="co">#&gt;                     "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", </span></span>
-<span><span class="co">#&gt;                     "FORMAT", "SAMPLE")) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;                   comment = "#", col_types = cols(.default = "c"), </span></span>
+<span><span class="co">#&gt;                   col_names = c("CHROM", "POS", "ID", "REF", </span></span>
+<span><span class="co">#&gt;                     "ALT", "QUAL", "FILTER", "INFO", "FORMAT", </span></span>
+<span><span class="co">#&gt;                     "SAMPLE")) %&gt;% as_tibble()</span></span>
 <span><span class="co">#&gt;             }</span></span>
 <span><span class="co">#&gt;             else {</span></span>
 <span><span class="co">#&gt;                 stop(glue("ERROR: cannot find var_path_1 file: {sample_sheet$var_path_1[i]}"))</span></span>
 <span><span class="co">#&gt;             }</span></span>
 <span><span class="co">#&gt;             if (file.exists(sample_sheet$var_path_2[i])) {</span></span>
 <span><span class="co">#&gt;                 var_2 &lt;- readr::read_tsv(sample_sheet$var_path_2[i], </span></span>
-<span><span class="co">#&gt;                   comment = "#", col_names = c("CHROM", "POS", </span></span>
-<span><span class="co">#&gt;                     "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", </span></span>
-<span><span class="co">#&gt;                     "FORMAT", "SAMPLE")) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;                   comment = "#", col_types = cols(.default = "c"), </span></span>
+<span><span class="co">#&gt;                   col_names = c("CHROM", "POS", "ID", "REF", </span></span>
+<span><span class="co">#&gt;                     "ALT", "QUAL", "FILTER", "INFO", "FORMAT", </span></span>
+<span><span class="co">#&gt;                     "SAMPLE")) %&gt;% as_tibble()</span></span>
 <span><span class="co">#&gt;             }</span></span>
 <span><span class="co">#&gt;             else {</span></span>
 <span><span class="co">#&gt;                 stop(glue("ERROR: cannot find var_path_2 file: {sample_sheet$var_path_2[i]}"))</span></span>
 <span><span class="co">#&gt;             }</span></span>
 <span><span class="co">#&gt;             if (file.exists(sample_sheet$cov_path_1[i])) {</span></span>
 <span><span class="co">#&gt;                 cov_1 &lt;- readr::read_tsv(sample_sheet$cov_path_1[i], </span></span>
-<span><span class="co">#&gt;                   comment = "#", col_names = c("chr", "start", </span></span>
-<span><span class="co">#&gt;                     "end", "bases_15x", "bases_20x", "exons_15x", </span></span>
-<span><span class="co">#&gt;                     "exons_20x", "exon")) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;                   comment = "#", col_types = cols(.default = "c"), </span></span>
+<span><span class="co">#&gt;                   col_names = c("chr", "start", "end", "bases_15x", </span></span>
+<span><span class="co">#&gt;                     "bases_20x", "exons_15x", "exons_20x", "exon")) %&gt;% </span></span>
+<span><span class="co">#&gt;                   as_tibble()</span></span>
 <span><span class="co">#&gt;             }</span></span>
 <span><span class="co">#&gt;             else {</span></span>
 <span><span class="co">#&gt;                 stop(glue("ERROR: cannot find cov_path_1 file: {sample_sheet$cov_path_1[i]}"))</span></span>
 <span><span class="co">#&gt;             }</span></span>
 <span><span class="co">#&gt;             if (file.exists(sample_sheet$cov_path_2[i])) {</span></span>
 <span><span class="co">#&gt;                 cov_2 &lt;- readr::read_tsv(sample_sheet$cov_path_2[i], </span></span>
-<span><span class="co">#&gt;                   comment = "#", col_names = c("chr", "start", </span></span>
-<span><span class="co">#&gt;                     "end", "bases_15x", "bases_20x", "exons_15x", </span></span>
-<span><span class="co">#&gt;                     "exons_20x", "exon")) %&gt;% as_tibble()</span></span>
+<span><span class="co">#&gt;                   comment = "#", col_types = cols(.default = "c"), </span></span>
+<span><span class="co">#&gt;                   col_names = c("chr", "start", "end", "bases_15x", </span></span>
+<span><span class="co">#&gt;                     "bases_20x", "exons_15x", "exons_20x", "exon")) %&gt;% </span></span>
+<span><span class="co">#&gt;                   as_tibble()</span></span>
 <span><span class="co">#&gt;             }</span></span>
 <span><span class="co">#&gt;             else {</span></span>
 <span><span class="co">#&gt;                 stop(glue("ERROR: cannot find cov_path_2 file: {sample_sheet$cov_path_2[i]}"))</span></span>
@@ -271,7 +275,7 @@
 <span><span class="co">#&gt;     class(mdlvalr_list) &lt;- c(pipeline, class(mdlvalr_list))</span></span>
 <span><span class="co">#&gt;     return(mdlvalr_list)</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x4a225f8&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x626b5f8&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:mdlvalr&gt;</span></span></code></pre></div>
 <p>However, doing this with generic functions leaves you wondering more! Instead, for generics, try the following to find the code behind R generic functions.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -282,7 +286,7 @@
 <span><span class="co">#&gt; {</span></span>
 <span><span class="co">#&gt;     UseMethod("compare_vars")</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x70ed278&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x89362e8&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:mdlvalr&gt;</span></span>
 <span></span>
 <span><span class="co"># List the available methods for this generic function</span></span>
@@ -325,7 +329,7 @@
 <span><span class="co">#&gt;     class(mdlvalr_list) &lt;- class(mdlvalr_list)</span></span>
 <span><span class="co">#&gt;     return(mdlvalr_list)</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x5508b90&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x6d54f08&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:mdlvalr&gt;</span></span>
 <span><span class="fu">mdlvalr</span><span class="fu">:::</span><span class="va"><a href="../reference/compare_vars.html">compare_vars.hybcap</a></span></span>
 <span><span class="co">#&gt; function (mdlvalr_list, pipeline = "hybcap", match_by_colnames = c("CHROM", </span></span>
@@ -355,7 +359,7 @@
 <span><span class="co">#&gt;     class(mdlvalr_list) &lt;- class(mdlvalr_list)</span></span>
 <span><span class="co">#&gt;     return(mdlvalr_list)</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x5508b90&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x6d54f08&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:mdlvalr&gt;</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
