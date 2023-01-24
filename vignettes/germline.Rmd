@@ -82,7 +82,9 @@ Get a list of known genes, which might be helpful for filtering later
 
 
 ```{r}
-gene_list <- read_tsv(glue("{extdata_dir}/aws_v6.0_gatk38germline/exons_MSOC.bed.geneList.tab"), col_names = "gene")
+gene_list <- read_tsv(glue("{extdata_dir}/aws_v6.0_gatk38germline/exons_MSOC.bed.geneList.tab"),
+    col_names = "gene",
+    col_types = cols(.default = "c"))
 ```
 
 
@@ -129,9 +131,8 @@ mdlvalr_list <- get_data(sample_sheet, pipeline = "germline")
 View the list object
 
 ```{r}
-# NEEDS DEVELOPMENT
 # Show the list-of-lists object
-# glimpse(mdlvalr_list)
+glimpse(mdlvalr_list)
 ```
 
 

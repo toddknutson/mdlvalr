@@ -62,7 +62,7 @@ get_data <- function(sample_sheet, pipeline) {
     } else if (pipeline == "germline") {
         for (i in seq_len(nrow(sample_sheet))) {
             if (file.exists(sample_sheet$var_path_1[i])) {
-                var_1 <- readr::read_tsv(sample_sheet$var_path_1[i], comment = "#",
+                var_1 <- readr::read_tsv(sample_sheet$var_path_1[i], comment = "#", col_types = cols(.default = "c"),
                     col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "SAMPLE")) %>%
                     as_tibble()
             } else {
@@ -70,7 +70,7 @@ get_data <- function(sample_sheet, pipeline) {
             }
 
             if (file.exists(sample_sheet$var_path_2[i])) {
-                var_2 <- readr::read_tsv(sample_sheet$var_path_2[i], comment = "#",
+                var_2 <- readr::read_tsv(sample_sheet$var_path_2[i], comment = "#", col_types = cols(.default = "c"),
                     col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "SAMPLE")) %>%
                     as_tibble()
             } else {
@@ -78,7 +78,7 @@ get_data <- function(sample_sheet, pipeline) {
             }
 
             if (file.exists(sample_sheet$cov_path_1[i])) {
-                cov_1 <- readr::read_tsv(sample_sheet$cov_path_1[i], comment = "#",
+                cov_1 <- readr::read_tsv(sample_sheet$cov_path_1[i], comment = "#", col_types = cols(.default = "c"),
                     col_names = c("chr", "start", "end", "bases_15x", "bases_20x", "exons_15x", "exons_20x", "exon")) %>%
                     as_tibble()
             } else {
@@ -86,7 +86,7 @@ get_data <- function(sample_sheet, pipeline) {
             }
 
             if (file.exists(sample_sheet$cov_path_2[i])) {
-                cov_2 <- readr::read_tsv(sample_sheet$cov_path_2[i], comment = "#",
+                cov_2 <- readr::read_tsv(sample_sheet$cov_path_2[i], comment = "#", col_types = cols(.default = "c"),
                     col_names = c("chr", "start", "end", "bases_15x", "bases_20x", "exons_15x", "exons_20x", "exon")) %>%
                     as_tibble()
             } else {
