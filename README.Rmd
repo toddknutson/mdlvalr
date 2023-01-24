@@ -37,12 +37,12 @@ remotes::install_github("msi/mdlvalr", host = "github.umn.edu/api/v3", auth_toke
 
 ## About the package
 
-The design rationale for the package can be found in the [About](./docs/articles/about.html) article/vignette.
+The design rationale for the package can be found in the [About](./articles/about.html) article/vignette.
 
 
 ## Examples
 
-Follow an example analysis in the [`hybcap`](./docs/articles/hybcap.html) pipeline article/vignette.
+Follow an example analysis in the [`hybcap`](./articles/hybcap.html) pipeline article/vignette.
 
 ## Notes
 
