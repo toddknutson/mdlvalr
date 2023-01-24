@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mdlvalr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,8 +103,8 @@
 <div class="section level2">
 <h2 id="a-potential-solution">A potential solution<a class="anchor" aria-label="anchor" href="#a-potential-solution"></a>
 </h2>
-<p>In once way, we could build multiple different concordance scripts that each handle specific pipelines. Alternatively, we could build a basic framework of concordance analysis that can be adjusted for each of the pipelines, but try to standardize each of the steps.</p>
-<p>For example, the basic approach of <code>mdlvalr</code> is to exploit the R programming language feature, called function “Methods”. We can build one function (e.g. <code><a href="../reference/compare_vars.html">compare_vars()</a></code>) that will “compare variant tables”, but create different methods that correspond to the pipeline of interest. This idea is exploited widely in R. For example, when you execute <code>print(object)</code> in R, it looks to see what <code>class</code> the object is, and returns a class-specific print out. This is how R knows how to print a linear model fit vs a data frame (<code>print(fit)</code> vs <code>print(df)</code>) to the screen using the same <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> function. Thus, <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> is a generic function in R that employs different methods. To list all the methods available to the generic print function, you can run: <code>methods(print)</code>. And if you load certain libraries (e.g. <code>tidyverse</code>), many more methods will be avaialble.</p>
+<p>In one way, we could build multiple different concordance scripts that each handle specific pipelines. Alternatively, we could build a basic framework of concordance analysis that can be adjusted for each of the pipelines, but try to standardize each of the main steps.</p>
+<p>For example, the basic approach of <code>mdlvalr</code> is to exploit an R programming language feature, called function “Methods”. We can build one function (e.g. <code><a href="../reference/compare_vars.html">compare_vars()</a></code>) that will “compare variant tables”, but create different methods that correspond to the pipeline of interest. This idea is exploited widely in R. For example, when you execute <code>print(object)</code> in R, it looks to see what <code>class</code> the object is, and returns a class-specific print out. This is how R knows how to print a linear model fit vs a data frame (<code>print(fit)</code> vs <code>print(df)</code>) to the screen using the same <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> function. Thus, <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> is a generic function in R that employs different methods. To list all the methods available to the generic print function, you can run: <code>methods(print)</code>. And if you load certain libraries (e.g. <code>tidyverse</code>), many more methods will be avaialble.</p>
 <p>For <code>mdlvalr</code> we can design the basic concordance steps as generic functions, but write pipeline specific methods, when needed. For example, in R code, the generic function name would be <code>step1</code> and the pipeline specific method name would be <code>step1.pipeline1</code>. Using this approach, if <code>class(object)</code> includes the class name “pipeline1”, then we can run <code>step1(object)</code> and the step1 function will automatically apply the pipeline1 method.</p>
 <p>Alternatively, we could simply build pipeline specific functions (e.g. <code>step1_pipeline1()</code>) for each and every step and pipeline combination. Exploiting the R generics/methods framework simply makes the code (and future code maintenance) more uniform.</p>
 </div>
@@ -113,7 +113,8 @@
 </h2>
 <p>For each step below (except <code><a href="../reference/get_data.html">get_data()</a></code>), a generic function was created. The generic function will point to a pipeline-specific “method” to be used (based on the class of the object).</p>
 <ol style="list-style-type: decimal">
-<li>get_data()
+<li>
+<code><a href="../reference/get_data.html">get_data()</a></code>
 <ul>
 <li>This is not an R generic function</li>
 <li>The purpose of this function is to take a sample sheet of comparisons as input and capture (read-in) all the necessary data to complete the analysis.</li>
@@ -121,7 +122,8 @@
 <li>A standard R list object is output from this function, but the list also has a new R class added to its attributes: the name of the pipeline (e.g. <code>hybcap</code>).</li>
 </ul>
 </li>
-<li>add_flags()
+<li>
+<code><a href="../reference/add_flags.html">add_flags()</a></code>
 <ul>
 <li>The purpose of this function is to add new columns to the variant and coverage tables.</li>
 <li>A coding sequence (CDS) table is used to determine whether a variant in the sample table falls within an exon or not. This results in a new column (<code>within_refseq_cds</code>) being added to the table with “yes” or “no” values.</li>
@@ -129,27 +131,31 @@
 <li>No variants or coverage rows are removed from any tables.</li>
 </ul>
 </li>
-<li>compare_vars()
+<li>
+<code><a href="../reference/compare_vars.html">compare_vars()</a></code>
 <ul>
 <li>The purpose of this function is to compare variant or coverage tables from each comparison group.</li>
-<li>The function runs <code>dylyr::full_join</code> (among other joins) by a set of common columns (e.g. CHROM, REF, ALT, etc.). All possible splits of the data are captured into sub-tables and saved to the R list object.</li>
+<li>The function runs <code>dylyr::full_join()</code> (among other joins) by a set of common columns (e.g. CHROM, REF, ALT, etc.). All possible splits of the data are captured into sub-tables and saved to the R list object.</li>
 </ul>
 </li>
-<li>add_var_labels()
+<li>
+<code><a href="../reference/add_var_labels.html">add_var_labels()</a></code>
 <ul>
 <li>The purpose of this function is to add new columns to the “compared” data tables.</li>
 <li>Using the pass/fail labels (from <code><a href="../reference/add_flags.html">add_flags()</a></code>) and along with their group membership (e.g. <code>vars_in_s1_not_in_s2</code>), we can further label variants as passing or failing in one or both samples being compared.</li>
 <li>No variants are removed from any tables</li>
 </ul>
 </li>
-<li>filter_data()
+<li>
+<code><a href="../reference/filter_data.html">filter_data()</a></code>
 <ul>
 <li>Finally, after comparing tables and labeling vars/coverage rows, we can use these labels to actually filter the tables.</li>
 <li>Tables can be filtered down into smaller “pass-only”, or “pass in sample1, fail in sample2” type tables.</li>
 <li>These filtered tables are added to the input list object.</li>
 </ul>
 </li>
-<li>get_stats()
+<li>
+<code><a href="../reference/get_stats.html">get_stats()</a></code>
 <ul>
 <li>This function simply reports the size of the all the various tables in the list object.</li>
 <li>For example: the total number of rows in the var_1 table, or the number of rows in the <code>vars_in_common_s1pass_s2pass</code> table.</li>
