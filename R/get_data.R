@@ -20,7 +20,7 @@
 #' \dontrun{
 #' mdlvalr_list <- get_data(sample_sheet, pipeline = "hybcap")
 #'}
-get_data <- function(sample_sheet, pipeline = c("hybcap")) {
+get_data <- function(sample_sheet, pipeline) {
     if (!pipeline %in% c("hybcap")) {
         stop("ERROR: pipeline arg supplied to `get_data()` must be only one of: c('hybcap')")
     }

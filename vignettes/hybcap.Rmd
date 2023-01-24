@@ -66,17 +66,14 @@ Create a sample sheet of comparisons
 
 ```{r}
 sample_sheet <- tibble::tibble(
-    pipeline = rep("hybcap", 4),
     var_path_1 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-100_*_filtered_integrated_variant_output_summary.xlsx")),
     var_path_2 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-150_*_filtered_integrated_variant_output_summary.xlsx")),
     cov_path_1 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-100_*_coverage_summary.xlsx")),
-    cov_path_2 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-150_*_coverage_summary.xlsx"))) %>%
+    cov_path_2 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-150_*_coverage_summary.xlsx"))
+) %>%
     dplyr::mutate(comparison_name_1 = str_remove(basename(var_path_1), "_.*$")) %>%
     dplyr::mutate(comparison_name_2 = str_remove(basename(var_path_2), "_.*$")) %>%
     dplyr::mutate(comparison_name = glue("{comparison_name_1}_vs_{comparison_name_2}"))
-
-# Add class to object
-class(sample_sheet) <- c("hybcap", class(sample_sheet))
 ```
 
 
@@ -87,7 +84,7 @@ class(sample_sheet) <- c("hybcap", class(sample_sheet))
 ## Run concordance
 
 ```{r}
-mdlvalr_list <- get_data(sample_sheet)
+mdlvalr_list <- get_data(sample_sheet, pipeline = "hybcap")
 
 mdlvalr_list <- add_flags(
     mdlvalr_list,
