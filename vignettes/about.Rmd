@@ -72,3 +72,32 @@ For each step below (except `get_data()`), a generic function was created. The g
 1. `export_excel()`
     * For each comparison, this function writes the various tables generated above into an Excel workbook, using tabs to represent different splits of the data.
     * Alternate exports of data could be imagined as well (i.e. not excel files -- maybe Rmarkdown, etc.).
+
+
+
+# Note about R generics
+
+Accessing the docs for a function in R is as easy, using `?function_name`. This will work great for `?get_data()` because it is a regular function.
+
+
+```{r, eval = TRUE}
+library(mdlvalr)
+
+?get_data()
+get_data
+```
+
+However, doing this with generic functions leaves you wondering more! Instead, for generics, try the following to find the code behind R generic functions.
+
+
+```{r, eval = TRUE}
+?compare_vars()
+compare_vars
+
+# List the available methods for this generic function
+methods(compare_vars)
+
+# Show the source code for the method: "hybcap"
+getAnywhere(compare_vars.hybcap)
+mdlvalr:::compare_vars.hybcap
+```
