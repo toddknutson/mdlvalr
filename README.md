@@ -7,7 +7,7 @@ This R package can be used to facilitate validation of MDL pipelines
 with R. To learn more, please explore the package
 [website](https://pages.github.umn.edu/msi/mdlvalr). There, you will
 find a list of
-[functions](https://pages.github.umn.edu/msi/mdlvalr/news/index.html),
+[functions](https://pages.github.umn.edu/msi/mdlvalr/reference/index.html),
 [articles/vignettes](https://pages.github.umn.edu/msi/mdlvalr/articles/index.html),
 and a
 [changelog](https://pages.github.umn.edu/msi/mdlvalr/news/index.html).
