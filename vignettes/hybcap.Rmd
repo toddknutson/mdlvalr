@@ -66,11 +66,11 @@ Create a sample sheet of comparisons
 
 ```{r}
 sample_sheet <- tibble::tibble(
-    var_path_1 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-100_*_filtered_integrated_variant_output_summary.xlsx")),
-    var_path_2 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-150_*_filtered_integrated_variant_output_summary.xlsx")),
-    cov_path_1 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-100_*_coverage_summary.xlsx")),
-    cov_path_2 = Sys.glob(glue("{extdata_dir}/hybcap_v1.0/*-150_*_coverage_summary.xlsx"))
-) %>%
+    var_path_1 = var_100ug ,
+    var_path_2 = var_150ug,
+    cov_path_1 = cov_100ug,
+    cov_path_2 = cov_150ug
+    ) %>%
     dplyr::mutate(comparison_name_1 = str_remove(basename(var_path_1), "_.*$")) %>%
     dplyr::mutate(comparison_name_2 = str_remove(basename(var_path_2), "_.*$")) %>%
     dplyr::mutate(comparison_name = glue("{comparison_name_1}_vs_{comparison_name_2}"))
